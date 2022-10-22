@@ -36,6 +36,10 @@ dependencies:
   firebase_app_check: ^0.1.1+1
   firebase_crashlytics: ^3.0.2
   flutter_local_notifications: ^12.0.2
+  infinite_scroll_pagination: ^3.2.0
+
+  flutter_ringtone_player: ^3.2.0
+  flutter_dropdown: ^1.0.1+hotfix.1
 
 
 dev_dependencies:
