@@ -14,11 +14,7 @@ abstract class OrderRepoContract {
 
   Future<List<Order>> readUserOrders(UserApp user);
 
-  Future<List<Order>> updateOrderStatus({
-    required Order order,
-    required UserApp user,
-    required OrderStatus status,
-  });
+  Future<Order> updateOrderStatus({required Order order});
 
   Future<Order> rateOrder(Order order, Rating rating);
 }
@@ -81,11 +77,19 @@ class OrderRepo extends OrderRepoContract {
   }
 
   @override
-  Future<List<Order>> updateOrderStatus(
-      {required Order order,
-      required UserApp user,
-      required OrderStatus status}) {
-    // TODO: implement updateOrderStatus
-    throw UnimplementedError();
+  Future<Order> updateOrderStatus({required Order order}) async {
+    final res = await firestore.updateOrder(order.id!, order.toMap());
+    final data =  res as Map<String, dynamic>;
+    return Future.value(Order.fromMap(data));
+  }
+
+  Future<List<Order>> readOrders() async {
+    final res = await firestore.readOrders();
+    final data = res.map((e) => Order.fromMap(e as Map<String, dynamic>)).toList();
+    return data;
+  }
+
+  Stream broadcastOrders() {
+    return firestore.getOrdersStream();
   }
 }

@@ -7,3 +7,13 @@ extension E on String{
   }
 }
 
+extension T on double {
+  String toStringWithoutPointZeroTrail() {
+    final str = toString();
+    final isContainPointZeroTrail = str.substring(str.length - 2) == ".0";
+    if (isContainPointZeroTrail) {
+      return str.substring(0, str.length - 2);
+    }
+    return str;
+  }
+}

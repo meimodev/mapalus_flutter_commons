@@ -1,7 +1,6 @@
-import 'package:dio/dio.dart';
+import '../mapalus_flutter_commons.dart';
 import 'dart:developer' as dev;
 
-import 'firebase_services.dart';
 
 class NotificationService {
   static NotificationService? _instance;

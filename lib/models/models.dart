@@ -9,3 +9,6 @@ export 'rating.dart';
 export 'result.dart';
 export 'user_app.dart';
 export 'version.dart';
+export 'partner.dart';
+export 'delivery_modifiers.dart';
+export 'users_info.dart';

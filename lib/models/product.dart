@@ -71,6 +71,8 @@ class Product {
 
   set weight(double weight) => _weight = weight.toString();
 
+  String get minimumPriceF => Utils.formatNumberToCurrency(minimumPrice);
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

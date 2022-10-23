@@ -12,13 +12,13 @@ class AppRepo extends AppRepoContract {
     return List<Map<String, dynamic>>.from(data['deliveries']);
   }
 
-  Future<bool> checkIfLatestVersion() async {
+  Future<bool> checkIfLatestVersion(bool isMapalus) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     String version = packageInfo.version;
     Version localVersion = Version.fromList(version.split('.'));
 
-    var data = await firestoreService.getAppVersion();
+    var data = await firestoreService.getAppVersion(isMapalus:isMapalus);
     Version remoteVersion = Version.fromMap(data as Map<String, dynamic>);
 
     dev.log('[APP VERSION] local $localVersion remote $remoteVersion');

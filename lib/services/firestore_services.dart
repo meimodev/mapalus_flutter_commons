@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
+import '../mapalus_flutter_commons.dart';
 import 'dart:developer' as dev;
 
 class FirestoreService {
@@ -38,13 +37,7 @@ class FirestoreService {
       col.doc(phone.phoneCleanUseZero()).get,
       'getUser',
     );
-    if (doc == null) {
-      return null;
-    }
-    if (!doc.exists) {
-      return null;
-    }
-    return doc.data();
+    return doc?.data();
   }
 
   Future<bool> checkPhoneRegistration(String phone) async {
@@ -73,11 +66,7 @@ class FirestoreService {
       col.doc(_keyDocumentDeliveryTimeEnv).get,
       'checkPhoneRegistration',
     );
-
-    if (doc == null) {
-      return null;
-    }
-    return doc.data();
+    return doc?.data();
   }
 
   Future<bool> createOrder(
@@ -108,13 +97,7 @@ class FirestoreService {
       'readOrder',
     );
 
-    if (doc == null) {
-      return null;
-    }
-    if (!doc.exists) {
-      return null;
-    }
-    return doc.data();
+    return doc?.data();
   }
 
   Future<List<Object?>> readUserOrders(String userPhone) async {
@@ -148,21 +131,15 @@ class FirestoreService {
       'read updated order',
     );
 
-    if (doc == null) {
-      return null;
-    }
-    if (!doc.exists) {
-      return null;
-    }
-    return doc.data();
+    return doc?.data();
   }
 
-  Future<List<Object?>> getProducts() async {
+  Future<List<Object?>> readProducts() async {
     final products = fireStore.collection(_keyCollectionProducts);
 
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
       products.get,
-      'getProducts',
+      'readProducts',
     );
 
     final res = docs!.docs.map((e) => e.data()).toList();
@@ -216,5 +193,151 @@ class FirestoreService {
     );
 
     return doc!.data();
+  }
+
+  Future<List<Object?>> readOrders() async {
+    final col = fireStore.collection(_keyCollectionOrders);
+    QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
+      col.get,
+      'readOrders',
+    );
+
+    if (docs == null) {
+      return [];
+    }
+
+    final res = docs.docs.map((e) => e.data()).toList();
+    return res;
+  }
+
+  Stream<QuerySnapshot<Object?>> getOrdersStream() {
+    final orders = fireStore.collection(_keyCollectionOrders);
+    return orders.snapshots();
+  }
+
+  Future<Object?> updateProduct(String id, Map<String, dynamic> data) async {
+    final col = fireStore.collection(_keyCollectionProducts);
+    await firestoreLogger(
+      () => col.doc(id).set(data),
+      'updateProduct',
+    );
+    return data;
+  }
+
+  Future<Object?> createProduct(Map<String, dynamic> data) async {
+    final products = fireStore.collection(_keyCollectionProducts);
+
+    final doc = await products.add(data);
+
+    final designatedId = doc.id;
+    data['id'] = designatedId;
+    await firestoreLogger(
+      () => products.doc(designatedId).set(data),
+      'createProduct',
+    );
+
+    final app = fireStore.collection(_keyCollectionApp);
+    await firestoreLogger(
+      () => app.doc('product').set({'count': FieldValue.increment(1)}),
+      'increment product count',
+    );
+
+    return data;
+  }
+
+  Future<bool> deleteProduct(String productId) async {
+    final products = fireStore.collection(_keyCollectionProducts);
+
+    await firestoreLogger(
+      () => products.doc(productId).delete(),
+      'deleteProduct',
+    );
+
+    final app = fireStore.collection(_keyCollectionApp);
+    await firestoreLogger(
+      () => app.doc('product').set({'count': FieldValue.increment(-1)}),
+      'decrement product count',
+    );
+    return true;
+  }
+
+  Future<Object?> readPartner(String partnerId) async {
+    CollectionReference col = fireStore.collection(_keyCollectionPartners);
+
+    DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
+      col.doc(partnerId).get,
+      'getPartner',
+    );
+
+    return doc?.data();
+  }
+
+  Future<Object?> readDeliveryModifiers() async {
+    final app = fireStore.collection(_keyCollectionApp);
+    DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
+      app.doc('delivery_fee').get,
+      'readDeliveryModifiers',
+    );
+    return doc?.data();
+  }
+
+  Future<bool> createDeliveryModifiers(Map<String, dynamic> data) async {
+    final app = fireStore.collection(_keyCollectionApp);
+    await firestoreLogger(
+      () => app.doc('delivery_fee').set(data),
+      'createDeliveryModifiers',
+    );
+    return true;
+  }
+
+  Future<Object?> getUsersInfo() async {
+    final app = fireStore.collection(_keyCollectionApp);
+    DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
+      app.doc('users_info').get,
+      'getUsersInfo',
+    );
+    return doc?.data();
+  }
+
+  Future<Object?> queryUsersInfo(String dateTimeString) async {
+    final app = fireStore.collection(_keyCollectionApp);
+
+    final users = await getUsers();
+    int usersWithOrder = 0;
+    for (var u in users) {
+      final userMap = u as Map<String, dynamic>;
+      final userOrders = List.of(userMap["orders"]);
+      if (userOrders.isNotEmpty) {
+        usersWithOrder++;
+      }
+    }
+
+    final data = {
+      "last_query": dateTimeString,
+      "had_order": usersWithOrder,
+      "verified_count": users.length,
+    };
+
+    await firestoreLogger(
+          () => app.doc('users_info').set(data),
+      'queryUsersInfo',
+    );
+    return data;
+  }
+
+  Future<List<Object?>> getUsers() async {
+    final col = fireStore.collection(_keyCollectionUsers);
+
+    QuerySnapshot<Map<String, dynamic>>? users = await firestoreLogger(
+      col.get,
+      'getUsers',
+    );
+
+    List<Object?> res = [];
+    for (var user in users!.docs) {
+      res.add(user.data());
+    }
+
+    return res;
   }
 }
