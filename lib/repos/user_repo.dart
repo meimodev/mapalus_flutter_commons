@@ -1,5 +1,6 @@
 import '../mapalus_flutter_commons.dart';
 import 'dart:developer' as dev;
+import 'dart:io' show Platform;
 
 abstract class UserRepoContract {
   Future<UserApp?> readSignedInUser();
@@ -38,7 +39,7 @@ class UserRepo extends UserRepoContract {
 
         // authStatusCalled = true;
         final result = await fireStore.getUser(user.phoneNumber!);
-        UserApp? userApp = result  == null
+        UserApp? userApp = result == null
             ? null
             : UserApp.fromMap(result as Map<String, dynamic>);
 
@@ -73,7 +74,7 @@ class UserRepo extends UserRepoContract {
           return;
         }
         final result = await fireStore.getUser(user.phoneNumber!);
-        UserApp? userApp = result  == null
+        UserApp? userApp = result == null
             ? null
             : UserApp.fromMap(result as Map<String, dynamic>);
 
@@ -104,7 +105,7 @@ class UserRepo extends UserRepoContract {
     }
   }
 
-  void signing(UserApp user) {
+  Future<void> signing(UserApp user) async {
     signedUser = user;
     if (onSuccessSigning != null) {
       onSuccessSigning!(user);
@@ -118,6 +119,32 @@ class UserRepo extends UserRepoContract {
     // var box = Hive.box('user_signing');
     // box.put('name', user.name);
     // box.put('phone', user.phone);
+
+    await updateUserDeviceInfo();
+  }
+
+  Future<void> updateUserDeviceInfo() async {
+    if (signedUser == null) {
+      return;
+    }
+    DeviceInfoPlugin dInfo = DeviceInfoPlugin();
+    String deviceInfoString = "";
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await dInfo.androidInfo;
+      deviceInfoString = '${androidInfo.manufacturer} '
+          '${androidInfo.model} '
+          'SDK:${androidInfo.version.sdkInt} '
+          '${androidInfo.version.codename} '
+          '${androidInfo.version.release}';
+    }
+    if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await dInfo.iosInfo;
+      deviceInfoString =
+          '${iosInfo.utsname.machine} ${iosInfo.model} ${iosInfo.name} ${iosInfo.utsname.version}';
+    }
+
+    await fireStore.updateUserDeviceInfo(signedUser!.phone, deviceInfoString);
   }
 
   @override
@@ -132,7 +159,7 @@ class UserRepo extends UserRepoContract {
 
   @override
   Future<UserApp> registerUser(String phone, String name) async {
-    UserApp user = UserApp(phone: phone, name: name);
+    UserApp user = UserApp(phone: phone, name: name.capitalizeByWord());
     await fireStore.createUser(phone, user.toMap());
     signing(user);
     return Future.value(user);

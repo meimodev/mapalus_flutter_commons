@@ -8,7 +8,7 @@ import 'product_order.dart';
 import 'rating.dart';
 import 'user_app.dart';
 
-class Order {
+class OrderApp {
   String? id;
   List<ProductOrder> products;
 
@@ -24,7 +24,7 @@ class Order {
   int paymentAmount;
   String note;
 
-  Order({
+  OrderApp({
     rating,
     deliveringUser,
     Jiffy? orderTimeStamp,
@@ -47,7 +47,7 @@ class Order {
     }
   }
 
-  Order.fromMap(Map<String, dynamic> data)
+  OrderApp.fromMap(Map<String, dynamic> data)
       :
         // deliveryInfo = DeliveryInfo.fromMap(data['delivery_info']),
         id = data['id'],

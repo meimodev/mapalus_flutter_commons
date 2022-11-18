@@ -35,3 +35,4 @@ export 'package:firebase_crashlytics/firebase_crashlytics.dart';
 export 'package:flutter_local_notifications/flutter_local_notifications.dart';
 export 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 export 'package:flutter_dropdown/flutter_dropdown.dart';
+export 'package:device_info_plus/device_info_plus.dart';

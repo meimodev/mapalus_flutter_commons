@@ -1,7 +1,7 @@
 import '../mapalus_flutter_commons.dart';
 
 abstract class OrderRepoContract {
-  Future<Order> createOrder({
+  Future<OrderApp> createOrder({
     required List<ProductOrder> products,
     required UserApp user,
     required OrderInfo orderInfo,
@@ -10,20 +10,20 @@ abstract class OrderRepoContract {
     int paymentAmount,
   });
 
-  Future<Order?> readOrder(String id);
+  Future<OrderApp?> readOrder(String id);
 
-  Future<List<Order>> readUserOrders(UserApp user);
+  Future<List<OrderApp>> readUserOrders(UserApp user);
 
-  Future<Order> updateOrderStatus({required Order order});
+  Future<OrderApp> updateOrderStatus({required OrderApp order});
 
-  Future<Order> rateOrder(Order order, Rating rating);
+  Future<OrderApp> rateOrder(OrderApp order, Rating rating);
 }
 
 class OrderRepo extends OrderRepoContract {
   FirestoreService firestore = FirestoreService();
 
   @override
-  Future<Order> createOrder({
+  Future<OrderApp> createOrder({
     required List<ProductOrder> products,
     required UserApp user,
     required OrderInfo orderInfo,
@@ -31,7 +31,7 @@ class OrderRepo extends OrderRepoContract {
     required String note,
     int paymentAmount = 0,
   }) async {
-    Order order = Order(
+    OrderApp order = OrderApp(
       orderingUser: user,
       status: OrderStatus.placed,
       products: products,
@@ -49,43 +49,43 @@ class OrderRepo extends OrderRepoContract {
   }
 
   @override
-  Future<Order> rateOrder(Order order, Rating rating) async {
+  Future<OrderApp> rateOrder(OrderApp order, Rating rating) async {
     order.rating = rating;
     order.status = OrderStatus.finished;
     order.setFinishTimeStamp(rating.ratingTimeStamp);
     final res = await firestore.updateOrder(order.generateId(), order.toMap());
-    final updatedOrder = Order.fromMap(res as Map<String, dynamic>);
+    final updatedOrder = OrderApp.fromMap(res as Map<String, dynamic>);
     return updatedOrder;
   }
 
   @override
-  Future<Order?> readOrder(String id) async {
+  Future<OrderApp?> readOrder(String id) async {
     final res = await firestore.readOrder(id);
     if (res == null) {
       return null;
     }
     final data = res as Map<String, dynamic>;
-    return Order.fromMap(data);
+    return OrderApp.fromMap(data);
   }
 
   @override
-  Future<List<Order>> readUserOrders(UserApp user) async {
+  Future<List<OrderApp>> readUserOrders(UserApp user) async {
     final res = await firestore.readUserOrders(user.phone);
     final data =
-        res.map((e) => Order.fromMap(e as Map<String, dynamic>)).toList();
+        res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
     return data;
   }
 
   @override
-  Future<Order> updateOrderStatus({required Order order}) async {
+  Future<OrderApp> updateOrderStatus({required OrderApp order}) async {
     final res = await firestore.updateOrder(order.id!, order.toMap());
     final data =  res as Map<String, dynamic>;
-    return Future.value(Order.fromMap(data));
+    return Future.value(OrderApp.fromMap(data));
   }
 
-  Future<List<Order>> readOrders() async {
+  Future<List<OrderApp>> readOrders() async {
     final res = await firestore.readOrders();
-    final data = res.map((e) => Order.fromMap(e as Map<String, dynamic>)).toList();
+    final data = res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
     return data;
   }
 

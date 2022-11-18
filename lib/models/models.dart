@@ -1,6 +1,6 @@
 export 'category.dart';
 export 'delivery_info.dart';
-export 'order.dart';
+export 'order_app.dart';
 export 'order_info.dart';
 export 'pricing_modifier.dart';
 export 'product.dart';

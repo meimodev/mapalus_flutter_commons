@@ -1,11 +1,13 @@
 class UserApp {
   String phone;
   String name;
+  String deviceInfo;
   List<String> orders;
 
   UserApp({
     required this.phone,
     required this.name,
+    this.deviceInfo = "",
     this.orders = const [],
   });
 
@@ -13,18 +15,20 @@ class UserApp {
       UserApp(
         phone: data["phone"],
         name: data["name"],
+        deviceInfo: data["device_info"] ?? "",
         orders: List<String>.from(data["orders"]),
       );
 
   @override
   String toString() {
-    return 'User{phone: $phone, name: $name, orders: $orders}';
+    return 'User{phone: $phone, name: $name, device_info: $deviceInfo orders: $orders}';
   }
 
   Map<String, dynamic> toMap({minify = false}) {
     return {
       'name': name,
       'phone': phone,
+      'device_info': deviceInfo,
       'orders': minify ? [] : orders,
     };
   }
