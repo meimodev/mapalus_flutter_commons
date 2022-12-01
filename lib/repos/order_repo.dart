@@ -89,6 +89,18 @@ class OrderRepo extends OrderRepoContract {
     return data;
   }
 
+  Future<List<OrderApp>> readOrdersToday() async {
+    final res = await firestore.readOrders();
+    final data = res.where((e) {
+
+      final order = OrderApp.fromMap(e as Map<String, dynamic>);
+      return order.orderTimeStamp!.dayOfYear == Jiffy().dayOfYear ;
+
+
+    });
+    return data.map((e) => OrderApp.fromMap(e as Map <String, dynamic>)).toList();
+  }
+
   Stream broadcastOrders() {
     return firestore.getOrdersStream();
   }

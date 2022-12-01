@@ -15,8 +15,10 @@ class FirestoreService {
 
   final String _keyDocumentDeliveryTimeEnv = '-env';
 
-  dynamic firestoreLogger(dynamic Function() request,
-      String? operation,) async {
+  dynamic firestoreLogger(
+    dynamic Function() request,
+    String? operation,
+  ) async {
     operation = operation ?? 'logging';
     try {
       final res = request();
@@ -32,9 +34,7 @@ class FirestoreService {
   Future<Object?> getUser(String phone) async {
     final col = fireStore.collection(_keyCollectionUsers);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col
-          .doc(phone.phoneCleanUseZero())
-          .get,
+      col.doc(phone.phoneCleanUseZero()).get,
       'getUser',
     );
     return doc?.data();
@@ -43,9 +43,7 @@ class FirestoreService {
   Future<bool> checkPhoneRegistration(String phone) async {
     final col = fireStore.collection(_keyCollectionUsers);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col
-          .doc(phone.phoneCleanUseZero())
-          .get,
+      col.doc(phone.phoneCleanUseZero()).get,
       'checkPhoneRegistration',
     );
     return doc?.exists ?? false;
@@ -55,7 +53,7 @@ class FirestoreService {
     final users = fireStore.collection(_keyCollectionUsers);
 
     await firestoreLogger(
-          () => users.doc(phone.phoneCleanUseZero()).set(data),
+      () => users.doc(phone.phoneCleanUseZero()).set(data),
       'createUser',
     );
 
@@ -65,29 +63,31 @@ class FirestoreService {
   Future<Object?> getDeliveryTimes() async {
     CollectionReference col = fireStore.collection(_keyCollectionDeliveryTime);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col
-          .doc(_keyDocumentDeliveryTimeEnv)
-          .get,
+      col.doc(_keyDocumentDeliveryTimeEnv).get,
       'checkPhoneRegistration',
     );
     return doc?.data();
   }
 
-  Future<bool> createOrder(String orderId,
-      String userPhone,
-      Map<String, dynamic> orderData,) async {
+  Future<bool> createOrder(
+    String orderId,
+    String userPhone,
+    Map<String, dynamic> orderData,
+  ) async {
     CollectionReference orders = fireStore.collection(_keyCollectionOrders);
     await firestoreLogger(
-          () => orders.doc(orderId).set(orderData),
+      () => orders.doc(orderId).set({
+        ...orderData,
+        'order_time_stamp': FieldValue.serverTimestamp(),
+      }),
       'createOrder',
     );
 
     CollectionReference users = fireStore.collection(_keyCollectionUsers);
     await firestoreLogger(
-          () =>
-          users.doc(userPhone.phoneCleanUseZero()).update({
-            "orders": FieldValue.arrayUnion([orderId])
-          }),
+      () => users.doc(userPhone.phoneCleanUseZero()).update({
+        "orders": FieldValue.arrayUnion([orderId])
+      }),
       'update user orders',
     );
     return true;
@@ -96,9 +96,7 @@ class FirestoreService {
   Future<Object?> readOrder(String id) async {
     final col = fireStore.collection(_keyCollectionOrders);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col
-          .doc(id)
-          .get,
+      col.doc(id).get,
       'readOrder',
     );
 
@@ -110,7 +108,7 @@ class FirestoreService {
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
       col
           .where('ordering_user.phone',
-          isEqualTo: userPhone.phoneCleanUseZero())
+              isEqualTo: userPhone.phoneCleanUseZero())
           .get,
       'readUserOrders',
     );
@@ -127,14 +125,12 @@ class FirestoreService {
     final orders = fireStore.collection(_keyCollectionOrders);
 
     await firestoreLogger(
-          () => orders.doc(orderId).set(data),
+      () => orders.doc(orderId).set(data),
       'updateOrder',
     );
 
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      orders
-          .doc(orderId)
-          .get,
+      orders.doc(orderId).get,
       'read updated order',
     );
 
@@ -156,9 +152,7 @@ class FirestoreService {
   Future<Object?> getAppVersion({isMapalus = true}) async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      app
-          .doc(isMapalus ? 'mapalus' : "mapalus_partner")
-          .get,
+      app.doc(isMapalus ? 'mapalus' : "mapalus_partner").get,
       'getAppVersion isMapalus = $isMapalus',
     );
     return doc!.data();
@@ -167,9 +161,7 @@ class FirestoreService {
   Future<Object?> getAppKeys() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      app
-          .doc('keys')
-          .get,
+      app.doc('keys').get,
       'getAppKeys',
     );
 
@@ -179,9 +171,7 @@ class FirestoreService {
   Future<Object?> getPartnerKey(String id) async {
     final partners = fireStore.collection(_keyCollectionPartners);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      partners
-          .doc(id)
-          .get,
+      partners.doc(id).get,
       'getPartnerKey',
     );
     return doc!.data();
@@ -191,7 +181,7 @@ class FirestoreService {
     final users = fireStore.collection(_keyCollectionUsers);
 
     await firestoreLogger(
-          () => users.doc(id).delete(),
+      () => users.doc(id).delete(),
       'deleteUser',
     );
 
@@ -201,9 +191,7 @@ class FirestoreService {
   Future<Object?> getPricingModifier() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      app
-          .doc('delivery_fee')
-          .get,
+      app.doc('delivery_fee').get,
       'getPricingModifiers',
     );
 
@@ -233,7 +221,7 @@ class FirestoreService {
   Future<Object?> updateProduct(String id, Map<String, dynamic> data) async {
     final col = fireStore.collection(_keyCollectionProducts);
     await firestoreLogger(
-          () => col.doc(id).set(data),
+      () => col.doc(id).set(data),
       'updateProduct',
     );
     return data;
@@ -247,13 +235,13 @@ class FirestoreService {
     final designatedId = doc.id;
     data['id'] = designatedId;
     await firestoreLogger(
-          () => products.doc(designatedId).set(data),
+      () => products.doc(designatedId).set(data),
       'createProduct',
     );
 
     final app = fireStore.collection(_keyCollectionApp);
     await firestoreLogger(
-          () => app.doc('product').set({'count': FieldValue.increment(1)}),
+      () => app.doc('product').set({'count': FieldValue.increment(1)}),
       'increment product count',
     );
 
@@ -264,13 +252,13 @@ class FirestoreService {
     final products = fireStore.collection(_keyCollectionProducts);
 
     await firestoreLogger(
-          () => products.doc(productId).delete(),
+      () => products.doc(productId).delete(),
       'deleteProduct',
     );
 
     final app = fireStore.collection(_keyCollectionApp);
     await firestoreLogger(
-          () => app.doc('product').set({'count': FieldValue.increment(-1)}),
+      () => app.doc('product').set({'count': FieldValue.increment(-1)}),
       'decrement product count',
     );
     return true;
@@ -280,9 +268,7 @@ class FirestoreService {
     CollectionReference col = fireStore.collection(_keyCollectionPartners);
 
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col
-          .doc(partnerId)
-          .get,
+      col.doc(partnerId).get,
       'getPartner',
     );
 
@@ -292,9 +278,7 @@ class FirestoreService {
   Future<Object?> readDeliveryModifiers() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      app
-          .doc('delivery_fee')
-          .get,
+      app.doc('delivery_fee').get,
       'readDeliveryModifiers',
     );
     return doc?.data();
@@ -303,7 +287,7 @@ class FirestoreService {
   Future<bool> createDeliveryModifiers(Map<String, dynamic> data) async {
     final app = fireStore.collection(_keyCollectionApp);
     await firestoreLogger(
-          () => app.doc('delivery_fee').set(data),
+      () => app.doc('delivery_fee').set(data),
       'createDeliveryModifiers',
     );
     return true;
@@ -312,9 +296,7 @@ class FirestoreService {
   Future<Object?> getUsersInfo() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      app
-          .doc('users_info')
-          .get,
+      app.doc('users_info').get,
       'getUsersInfo',
     );
     return doc?.data();
@@ -340,7 +322,7 @@ class FirestoreService {
     };
 
     await firestoreLogger(
-          () => app.doc('users_info').set(data),
+      () => app.doc('users_info').set(data),
       'queryUsersInfo',
     );
     return data;
@@ -362,18 +344,16 @@ class FirestoreService {
     return res;
   }
 
-  Future<void> updateUserDeviceInfo(String phone,
-      String deviceInfoString) async {
+  Future<void> updateUserDeviceInfo(
+      String phone, String deviceInfoString) async {
     final users = fireStore.collection(_keyCollectionUsers);
 
     await firestoreLogger(
-          () =>
-          users.doc(phone.phoneCleanUseZero()).set(
-            {"device_info": deviceInfoString},
-            SetOptions(merge: true),
-          ),
+      () => users.doc(phone.phoneCleanUseZero()).set(
+        {"device_info": deviceInfoString},
+        SetOptions(merge: true),
+      ),
       'updateUserDeviceInfo',
     );
-
   }
 }
