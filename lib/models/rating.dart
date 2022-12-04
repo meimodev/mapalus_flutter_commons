@@ -1,44 +1,30 @@
-import 'package:jiffy/jiffy.dart';
-
-import '../shared/shared.dart';
-
-
 class Rating {
   int number;
   String message;
-  final String _ratingTimeStamp;
 
   Rating(
     this.number,
     this.message,
-    Jiffy ratingTimeStamp,
-  ) : _ratingTimeStamp = ratingTimeStamp.format(Values.formatRawDate);
-
-  Jiffy get ratingTimeStamp {
-    return Jiffy(_ratingTimeStamp, Values.formatRawDate);
-  }
+  );
 
   Rating.zero()
       : number = 0,
-        message = '',
-        _ratingTimeStamp = '';
+        message = '';
 
   Rating.fromMap(Map<String, dynamic> data)
       : number = data["number"],
-        message = data["message"],
-        _ratingTimeStamp = data["rate_time_stamp"];
+        message = data["message"];
 
   Map<String, dynamic> toMap() {
     return {
       "number": number,
       "message": message,
-      "rate_time_stamp": _ratingTimeStamp,
     };
   }
 
   @override
   String toString() {
-    return 'Rating{number: $number, message: $message, _ratingTimeStamp: $_ratingTimeStamp}';
+    return 'Rating{number: $number, message: $message}';
   }
 
   @override
@@ -47,10 +33,8 @@ class Rating {
       other is Rating &&
           runtimeType == other.runtimeType &&
           number == other.number &&
-          message == other.message &&
-          _ratingTimeStamp == other._ratingTimeStamp;
+          message == other.message;
 
   @override
-  int get hashCode =>
-      number.hashCode ^ message.hashCode ^ _ratingTimeStamp.hashCode;
+  int get hashCode => number.hashCode ^ message.hashCode;
 }
