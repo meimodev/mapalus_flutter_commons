@@ -11,12 +11,13 @@ class UserApp {
     this.orders = const [],
   });
 
-  factory UserApp.fromMap(Map<String, dynamic> data) =>
-      UserApp(
+  factory UserApp.fromMap(Map<String, dynamic> data) => UserApp(
         phone: data["phone"],
         name: data["name"],
         deviceInfo: data["device_info"] ?? "",
-        orders: List<String>.from(data["orders"]),
+        orders: data["orders"] != null
+            ? List<String>.from(data["orders"])
+            : [],
       );
 
   @override
@@ -25,11 +26,17 @@ class UserApp {
   }
 
   Map<String, dynamic> toMap({minify = false}) {
+    if (minify) {
+      return {
+        'name': name,
+        'phone': phone,
+      };
+    }
     return {
       'name': name,
       'phone': phone,
       'device_info': deviceInfo,
-      'orders': minify ? [] : orders,
+      'orders': orders,
     };
   }
 }

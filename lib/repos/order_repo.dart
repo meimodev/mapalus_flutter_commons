@@ -31,7 +31,7 @@ class OrderRepo extends OrderRepoContract {
     required String note,
     int paymentAmount = 0,
   }) async {
-    OrderApp order = OrderApp(
+    final order = OrderApp(
       orderingUser: user,
       status: OrderStatus.placed,
       products: products,
@@ -45,15 +45,22 @@ class OrderRepo extends OrderRepoContract {
       user.phone,
       order.toMap(),
     );
-    return order;
+    //read order again with newly created id
+    await Future.delayed(const Duration(seconds: 1));
+    final createdOrder = await firestore.readOrder(order.id!);
+    return OrderApp.fromMap(createdOrder as Map<String, dynamic>);
   }
 
   @override
   Future<OrderApp> rateOrder(OrderApp order, Rating rating) async {
     order.rating = rating;
     order.status = OrderStatus.finished;
-    order.setFinishTimeStamp(rating.ratingTimeStamp);
-    final res = await firestore.updateOrder(order.generateId(), order.toMap());
+    // order.setFinishTimeStamp(rating.ratingTimeStamp);
+    // later set the finish time stamp directly in the service ?
+    final res = await firestore.updateOrder(order.generateId(), {
+      ...order.toMap(),
+      'finish_time_stamp': FieldValue.serverTimestamp(),
+    });
     final updatedOrder = OrderApp.fromMap(res as Map<String, dynamic>);
     return updatedOrder;
   }
@@ -78,27 +85,44 @@ class OrderRepo extends OrderRepoContract {
 
   @override
   Future<OrderApp> updateOrderStatus({required OrderApp order}) async {
-    final res = await firestore.updateOrder(order.id!, order.toMap());
-    final data =  res as Map<String, dynamic>;
+    late final Map<String, dynamic> timestamp;
+    switch (order.status) {
+      case OrderStatus.placed:
+        timestamp = {'order_time_stamp': FieldValue.serverTimestamp()};
+        break;
+      case OrderStatus.accepted:
+        timestamp = {'confirm_time_stamp': FieldValue.serverTimestamp()};
+        break;
+      case OrderStatus.rejected:
+        timestamp = {'confirm_time_stamp': FieldValue.serverTimestamp()};
+        break;
+      case OrderStatus.finished:
+        timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
+        break;
+    }
+
+    final res = await firestore
+        .updateOrder(order.id!, {...order.toMap(), ...timestamp});
+    final data = res as Map<String, dynamic>;
     return Future.value(OrderApp.fromMap(data));
   }
 
   Future<List<OrderApp>> readOrders() async {
     final res = await firestore.readOrders();
-    final data = res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
+    final data =
+        res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
     return data;
   }
 
   Future<List<OrderApp>> readOrdersToday() async {
     final res = await firestore.readOrders();
     final data = res.where((e) {
-
       final order = OrderApp.fromMap(e as Map<String, dynamic>);
-      return order.orderTimeStamp!.dayOfYear == Jiffy().dayOfYear ;
-
-
+      return order.orderTimeStamp.isSame(Jiffy(), Units.DAY);
     });
-    return data.map((e) => OrderApp.fromMap(e as Map <String, dynamic>)).toList();
+    return data
+        .map((e) => OrderApp.fromMap(e as Map<String, dynamic>))
+        .toList();
   }
 
   Stream broadcastOrders() {

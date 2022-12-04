@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jiffy/jiffy.dart';
 
 import '../shared/shared.dart';
@@ -14,9 +15,10 @@ class OrderApp {
 
   // DeliveryInfo deliveryInfo;
   OrderStatus status;
-  String? _orderTimeStamp;
-  String? _finishTimeStamp;
-  Rating rating;
+  DateTime? _orderTimeStamp;
+  DateTime? _confirmTimeStamp;
+  DateTime? _finishTimeStamp;
+  Rating? rating;
   UserApp orderingUser;
   UserApp? deliveringUser;
   OrderInfo orderInfo;
@@ -27,25 +29,14 @@ class OrderApp {
   OrderApp({
     rating,
     deliveringUser,
-    Jiffy? orderTimeStamp,
-    Jiffy? finishTimeStamp,
     required this.orderingUser,
-    // required this.deliveryInfo,
     required this.products,
     required this.status,
     required this.orderInfo,
     required this.paymentMethod,
     this.paymentAmount = 0,
     required this.note,
-  }) : rating = Rating.zero() {
-    if (orderTimeStamp == null) {
-      _orderTimeStamp = Jiffy().format(Values.formatRawDate);
-    }
-
-    if (finishTimeStamp != null) {
-      _finishTimeStamp = finishTimeStamp.format(Values.formatRawDate);
-    }
-  }
+  });
 
   OrderApp.fromMap(Map<String, dynamic> data)
       :
@@ -55,32 +46,33 @@ class OrderApp {
         status = OrderStatus.values.firstWhere(
           (element) => element.name == data['status'],
         ),
-        _orderTimeStamp = data['order_time'],
-        _finishTimeStamp = data['finish_time'] ?? '',
+        _orderTimeStamp = data['order_time_stamp'] != null
+            ? (data['order_time_stamp'] as Timestamp).toDate()
+            : Jiffy(data['order_time'].toString(), Values.formatRawDate)
+                .dateTime,
+        _finishTimeStamp = data['finish_time_stamp'] != null
+            ? (data['finish_time_stamp'] as Timestamp).toDate()
+            : data['finish_time'].toString().isEmpty ||
+                    data['finish_time'] == null
+                ? null
+                : Jiffy(data['finish_time'].toString(), Values.formatRawDate)
+                    .dateTime,
+        _confirmTimeStamp = data['confirm_time_stamp'] != null
+            ? (data['confirm_time_stamp'] as Timestamp).toDate()
+            : null,
         products = List<ProductOrder>.from(
           (data['products'] as List<dynamic>).map(
             (e) => ProductOrder.fromMap(e),
           ),
         ),
-        rating = Rating.fromMap(data["rating"]),
+        rating = data['rating'] != null ? Rating.fromMap(data["rating"]) : null,
         orderingUser = UserApp.fromMap(data['ordering_user']),
-        deliveringUser = data['delivering_user'] == null
-            ? null
-            : UserApp.fromMap(data['delivering_user']),
+        deliveringUser = data['delivering_user'] != null
+            ? UserApp.fromMap(data['delivering_user'])
+            : null,
         paymentMethod = data['payment_method'] ?? '',
         paymentAmount = data['payment_amount'] ?? 0,
         note = data['note'] ?? '';
-
-  String get finishTimeStampF {
-    if (finishTimeStamp == null) {
-      return "-";
-    }
-    return finishTimeStamp!.format("E, ddd MMM yyyy");
-  }
-
-  String get idMinified {
-    return id!.replaceRange(0, 12, '');
-  }
 
   String generateId() {
     if (id != null) {
@@ -94,21 +86,33 @@ class OrderApp {
     return res;
   }
 
-  Jiffy? get orderTimeStamp {
-    return _orderTimeStamp == null
-        ? null
-        : Jiffy(_orderTimeStamp, Values.formatRawDate);
+  String get idMinified {
+    return id!.replaceRange(0, 12, '');
+  }
+
+  Jiffy get orderTimeStamp {
+    return Jiffy(_orderTimeStamp);
   }
 
   Jiffy? get finishTimeStamp {
-    if (_finishTimeStamp != null && _finishTimeStamp!.isNotEmpty) {
-      return Jiffy(_finishTimeStamp, Values.formatRawDate);
+    if (_finishTimeStamp != null) {
+      return Jiffy(_finishTimeStamp);
     }
     return null;
   }
 
-  void setFinishTimeStamp(Jiffy timeStamp) {
-    _finishTimeStamp = timeStamp.format(Values.formatRawDate);
+  Jiffy? get confirmTimeStamp {
+    if (_confirmTimeStamp != null) {
+      return Jiffy(_confirmTimeStamp);
+    }
+    return null;
+  }
+
+  String get finishTimeStampF {
+    if (finishTimeStamp == null) {
+      return "-";
+    }
+    return finishTimeStamp!.format("E, ddd MMM yyyy");
   }
 
   String get paymentMethodF {
@@ -139,12 +143,9 @@ class OrderApp {
       // 'delivery_info': deliveryInfo.toMap(),
       'order_info': orderInfo.toMap(),
       'status': status.name,
-      'order_time': _orderTimeStamp,
-      'finish_time': _finishTimeStamp,
-      'rating': rating.toMap(),
+      'rating': rating?.toMap(),
       'ordering_user': orderingUser.toMap(minify: true),
-      'delivering_user':
-          deliveringUser != null ? deliveringUser!.toMap() : null,
+      'delivering_user': deliveringUser?.toMap(),
       'payment_method': paymentMethod,
       'payment_amount': paymentAmount,
       'note': note,

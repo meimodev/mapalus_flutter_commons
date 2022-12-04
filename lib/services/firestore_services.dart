@@ -125,7 +125,7 @@ class FirestoreService {
     final orders = fireStore.collection(_keyCollectionOrders);
 
     await firestoreLogger(
-      () => orders.doc(orderId).set(data),
+      () => orders.doc(orderId).set(data, SetOptions(merge: true)),
       'updateOrder',
     );
 
