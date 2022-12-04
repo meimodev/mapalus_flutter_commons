@@ -17,6 +17,7 @@ class OrderApp {
   OrderStatus status;
   DateTime? _orderTimeStamp;
   DateTime? _confirmTimeStamp;
+  DateTime? _deliverTimeStamp;
   DateTime? _finishTimeStamp;
   Rating? rating;
   UserApp orderingUser;
@@ -59,6 +60,9 @@ class OrderApp {
                     .dateTime,
         _confirmTimeStamp = data['confirm_time_stamp'] != null
             ? (data['confirm_time_stamp'] as Timestamp).toDate()
+            : null,
+        _deliverTimeStamp = data['deliver_time_stamp'] != null
+            ? (data['deliver_time_stamp'] as Timestamp).toDate()
             : null,
         products = List<ProductOrder>.from(
           (data['products'] as List<dynamic>).map(
@@ -104,6 +108,13 @@ class OrderApp {
   Jiffy? get confirmTimeStamp {
     if (_confirmTimeStamp != null) {
       return Jiffy(_confirmTimeStamp);
+    }
+    return null;
+  }
+
+  Jiffy? get deliverTimeStamp {
+    if (_deliverTimeStamp != null) {
+      return Jiffy(_deliverTimeStamp);
     }
     return null;
   }

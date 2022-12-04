@@ -55,7 +55,7 @@ class OrderInfo {
   }
 
   String get deliveryWeightF {
-    return '$deliveryWeight Kg $deliveryDistance Km';
+    return '$deliveryWeight Kg - $deliveryDistance Km';
   }
 
   String get deliveryCoordinateF {

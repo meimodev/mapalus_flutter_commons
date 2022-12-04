@@ -1,4 +1,4 @@
-enum OrderStatus { placed, accepted, rejected, finished }
+enum OrderStatus { placed, accepted, rejected, delivered, finished }
 
 enum ProductStatus { available, unavailable }
 

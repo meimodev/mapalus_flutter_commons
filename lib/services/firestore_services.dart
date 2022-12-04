@@ -218,6 +218,11 @@ class FirestoreService {
     return orders.snapshots();
   }
 
+  Stream<DocumentSnapshot<Object?>> getOrderStream(String orderId) {
+    final orders = fireStore.collection(_keyCollectionOrders);
+    return orders.doc(orderId).snapshots();
+  }
+
   Future<Object?> updateProduct(String id, Map<String, dynamic> data) async {
     final col = fireStore.collection(_keyCollectionProducts);
     await firestoreLogger(

@@ -55,8 +55,6 @@ class OrderRepo extends OrderRepoContract {
   Future<OrderApp> rateOrder(OrderApp order, Rating rating) async {
     order.rating = rating;
     order.status = OrderStatus.finished;
-    // order.setFinishTimeStamp(rating.ratingTimeStamp);
-    // later set the finish time stamp directly in the service ?
     final res = await firestore.updateOrder(order.generateId(), {
       ...order.toMap(),
       'finish_time_stamp': FieldValue.serverTimestamp(),
@@ -95,6 +93,9 @@ class OrderRepo extends OrderRepoContract {
         break;
       case OrderStatus.rejected:
         timestamp = {'confirm_time_stamp': FieldValue.serverTimestamp()};
+        break;
+      case OrderStatus.delivered:
+        timestamp = {'deliver_time_stamp': FieldValue.serverTimestamp()};
         break;
       case OrderStatus.finished:
         timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
