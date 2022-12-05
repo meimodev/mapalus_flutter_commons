@@ -352,13 +352,37 @@ class FirestoreService {
   Future<void> updateUserDeviceInfo(
       String phone, String deviceInfoString) async {
     final users = fireStore.collection(_keyCollectionUsers);
-
     await firestoreLogger(
       () => users.doc(phone.phoneCleanUseZero()).set(
         {"device_info": deviceInfoString},
         SetOptions(merge: true),
       ),
       'updateUserDeviceInfo',
+    );
+  }
+
+  Future<void> updateFcmToken(
+    String phone,
+    String? token,
+  ) async {
+    final users = fireStore.collection(_keyCollectionUsers);
+    await firestoreLogger(
+      () => users.doc(phone.phoneCleanUseZero()).set(
+        {"fcm_token": token},
+        SetOptions(merge: true),
+      ),
+      'updateFcmToken',
+    );
+  }
+
+  Future<void> updateLastActiveTimeStamp(String phone) async {
+    final users = fireStore.collection(_keyCollectionUsers);
+    await firestoreLogger(
+      () => users.doc(phone.phoneCleanUseZero()).set(
+        {"last_active_time_stamp": FieldValue.serverTimestamp()},
+        SetOptions(merge: true),
+      ),
+      'updateLastActiveTimeStamp',
     );
   }
 }

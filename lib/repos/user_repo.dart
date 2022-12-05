@@ -121,6 +121,8 @@ class UserRepo extends UserRepoContract {
     // box.put('phone', user.phone);
 
     await updateUserDeviceInfo();
+    await updateFcmToken(user.phone);
+    await updateLastActiveTimeStamp(user.phone);
   }
 
   Future<void> updateUserDeviceInfo() async {
@@ -145,6 +147,18 @@ class UserRepo extends UserRepoContract {
     }
 
     await fireStore.updateUserDeviceInfo(signedUser!.phone, deviceInfoString);
+  }
+
+  Future<void> updateFcmToken(String phone) async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    await fireStore.updateFcmToken(phone, fcmToken);
+    if (signedUser != null) {
+      signedUser!.fcmToken = fcmToken;
+    }
+  }
+
+  Future<void> updateLastActiveTimeStamp(String phone) async {
+    await fireStore.updateLastActiveTimeStamp(phone);
   }
 
   @override
