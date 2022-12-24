@@ -63,7 +63,9 @@ class FirestoreService {
   Future<Object?> getDeliveryTimes() async {
     CollectionReference col = fireStore.collection(_keyCollectionDeliveryTime);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col.doc(_keyDocumentDeliveryTimeEnv).get,
+      () => col
+          .doc(_keyDocumentDeliveryTimeEnv)
+          .get(const GetOptions(source: Source.server)),
       'checkPhoneRegistration',
     );
     return doc?.data();
@@ -191,7 +193,7 @@ class FirestoreService {
   Future<Object?> getPricingModifier() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      app.doc('delivery_fee').get,
+        ()=>app.doc('delivery_fee').get(const GetOptions(source: Source.server)),
       'getPricingModifiers',
     );
 
@@ -384,5 +386,17 @@ class FirestoreService {
       ),
       'updateLastActiveTimeStamp',
     );
+  }
+
+  Future<Object?> getAppAnnouncement() async {
+    final app = fireStore.collection(_keyCollectionApp);
+    DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
+      () => app.doc('announcement').get(
+            const GetOptions(source: Source.server),
+          ),
+      'getAppAnnouncement',
+    );
+
+    return doc!.data();
   }
 }

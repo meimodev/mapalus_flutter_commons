@@ -18,7 +18,7 @@ class AppRepo extends AppRepoContract {
     String version = packageInfo.version;
     Version localVersion = Version.fromList(version.split('.'));
 
-    var data = await firestoreService.getAppVersion(isMapalus:isMapalus);
+    var data = await firestoreService.getAppVersion(isMapalus: isMapalus);
     Version remoteVersion = Version.fromMap(data as Map<String, dynamic>);
 
     dev.log('[APP VERSION] local $localVersion remote $remoteVersion');
@@ -37,5 +37,13 @@ class AppRepo extends AppRepoContract {
   Future<Map<String, dynamic>> getPricingModifier() async {
     var data = await firestoreService.getPricingModifier();
     return data as Map<String, dynamic>;
+  }
+
+  Future<Announcement?> getAppAnnouncement() async {
+    final data = await firestoreService.getAppAnnouncement();
+
+    return data != null
+        ? Announcement.fromMap(data as Map<String, dynamic>)
+        : null;
   }
 }
