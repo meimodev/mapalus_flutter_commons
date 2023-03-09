@@ -193,7 +193,7 @@ class FirestoreService {
   Future<Object?> getPricingModifier() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-        ()=>app.doc('delivery_fee').get(const GetOptions(source: Source.server)),
+        app.doc('delivery_fee').get,
       'getPricingModifiers',
     );
 

@@ -42,7 +42,6 @@ dependencies:
   flutter_dropdown: ^1.0.1+hotfix.1
   device_info_plus: ^8.1.0
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
