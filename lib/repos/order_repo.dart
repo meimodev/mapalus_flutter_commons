@@ -119,7 +119,7 @@ class OrderRepo extends OrderRepoContract {
     final res = await firestore.readOrders();
     final data = res.where((e) {
       final order = OrderApp.fromMap(e as Map<String, dynamic>);
-      return order.orderTimeStamp.isSame(Jiffy(), Units.DAY);
+      return order.orderTimeStamp.isSame(Jiffy.now(), unit: Unit.day);
     });
     return data
         .map((e) => OrderApp.fromMap(e as Map<String, dynamic>))

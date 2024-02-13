@@ -1,5 +1,6 @@
-import 'package:jiffy/jiffy.dart';
 import 'dart:developer' as dev;
+
+import 'package:jiffy/jiffy.dart';
 
 import '../shared/shared.dart';
 import 'pricing_modifier.dart';
@@ -12,7 +13,7 @@ class DeliveryInfo {
   final String _discount;
   PricingModifier pricingModifier;
 
-  String currentDate = Jiffy().format("dd/MM/yyyy");
+  String get currentDate => Jiffy.now().format(pattern: "dd/MM/yyyy");
 
   // final List<List<double>> priceMatrixFromWeight = [
   //   //[0 - 2Km, >2Km - 4Km, >4Km - 6.5Km, >6.5km - 8Km]
@@ -45,20 +46,23 @@ class DeliveryInfo {
       );
 
   Jiffy get startDate {
-    var res = Jiffy("$_start $currentDate", "HH:mm dd/MM/yyyy");
+    var res = Jiffy.parse("$_start $currentDate", pattern: "HH:mm dd/MM/yyyy");
     return res;
   }
 
   Jiffy get endDate {
-    var res = Jiffy("$_end $currentDate", "HH:mm dd/MM/yyyy");
+    var res = Jiffy.parse("$_end $currentDate", pattern: "HH:mm dd/MM/yyyy");
     return res;
   }
 
   bool get isTomorrow {
+
+
+
     if (id == "NOW") {
-      return !Jiffy().isBetween(startDate, endDate);
+      return !Jiffy.now().isBetween(startDate, endDate);
     }
-    return Jiffy().isAfter(startDate);
+    return Jiffy.now().isAfter(startDate);
   }
 
   String get title {

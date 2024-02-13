@@ -49,14 +49,14 @@ class OrderApp {
         ),
         _orderTimeStamp = data['order_time_stamp'] != null
             ? (data['order_time_stamp'] as Timestamp).toDate()
-            : Jiffy(data['order_time'].toString(), Values.formatRawDate)
+            : Jiffy.parse(data['order_time'].toString(), pattern: Values.formatRawDate)
                 .dateTime,
         _finishTimeStamp = data['finish_time_stamp'] != null
             ? (data['finish_time_stamp'] as Timestamp).toDate()
             : data['finish_time'].toString().isEmpty ||
                     data['finish_time'] == null
                 ? null
-                : Jiffy(data['finish_time'].toString(), Values.formatRawDate)
+                : Jiffy.parse(data['finish_time'].toString(),pattern: Values.formatRawDate)
                     .dateTime,
         _confirmTimeStamp = data['confirm_time_stamp'] != null
             ? (data['confirm_time_stamp'] as Timestamp).toDate()
@@ -83,9 +83,9 @@ class OrderApp {
       return id!;
     }
 
-    final now = Jiffy();
+    final now = Jiffy.now();
     final random = Random().nextInt(9999);
-    final res = '${now.format('yyyyMMddHHmm')}$random';
+    final res = '${now.format(pattern:'yyyyMMddHHmm')}$random';
     id = res;
     return res;
   }
@@ -95,26 +95,26 @@ class OrderApp {
   }
 
   Jiffy get orderTimeStamp {
-    return Jiffy(_orderTimeStamp);
+    return Jiffy.parseFromDateTime(_orderTimeStamp!);
   }
 
   Jiffy? get finishTimeStamp {
     if (_finishTimeStamp != null) {
-      return Jiffy(_finishTimeStamp);
+      return Jiffy.parseFromDateTime(_finishTimeStamp!);
     }
     return null;
   }
 
   Jiffy? get confirmTimeStamp {
     if (_confirmTimeStamp != null) {
-      return Jiffy(_confirmTimeStamp);
+      return Jiffy.parseFromDateTime(_confirmTimeStamp!);
     }
     return null;
   }
 
   Jiffy? get deliverTimeStamp {
     if (_deliverTimeStamp != null) {
-      return Jiffy(_deliverTimeStamp);
+      return Jiffy.parseFromDateTime(_deliverTimeStamp!);
     }
     return null;
   }
@@ -123,7 +123,7 @@ class OrderApp {
     if (finishTimeStamp == null) {
       return "-";
     }
-    return finishTimeStamp!.format("E, ddd MMM yyyy");
+    return finishTimeStamp!.format(pattern:"E, ddd MMM yyyy");
   }
 
   String get paymentMethodF {

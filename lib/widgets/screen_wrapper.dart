@@ -3,8 +3,7 @@ import '../shared/shared.dart';
 
 
 class ScreenWrapper extends StatelessWidget {
-  const ScreenWrapper({Key? key, required this.child, this.backgroundColor})
-      : super(key: key);
+  const ScreenWrapper({super.key, required this.child, this.backgroundColor});
 
   final Widget child;
   final Color? backgroundColor;

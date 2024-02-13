@@ -3,9 +3,10 @@ import '../mapalus_flutter_commons.dart';
 
 class CustomImage extends StatelessWidget {
   const CustomImage({
-    Key? key,
-    required this.imageUrl, this.assetPath,
-  }) : super(key: key);
+    super.key,
+    required this.imageUrl,
+    this.assetPath,
+  });
 
   final String imageUrl;
   final String? assetPath;
@@ -17,7 +18,10 @@ class CustomImage extends StatelessWidget {
     }
 
     if (assetPath != null) {
-      return Image.asset(assetPath!, fit: BoxFit.cover,);
+      return Image.asset(
+        assetPath!,
+        fit: BoxFit.cover,
+      );
     }
 
     return Stack(
@@ -49,21 +53,20 @@ class CustomImage extends StatelessWidget {
         CachedNetworkImage(
           imageUrl: imageUrl,
           fadeInDuration: const Duration(milliseconds: 600),
-          placeholder: (context, _) =>
-              Container(
-                color: Colors.transparent,
+          placeholder: (context, _) => Container(
+            color: Colors.transparent,
+          ),
+          errorWidget: (context, _, __) => Container(
+            color: Palette.accent,
+            child: Center(
+              child: SvgPicture.asset(
+                'assets/images/mapalus.svg',
+                colorFilter:
+                    const ColorFilter.mode(Palette.primary, BlendMode.srcIn),
+                width: 60.w,
               ),
-          errorWidget: (context, _, __) =>
-              Container(
-                color: Palette.accent,
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/images/mapalus.svg',
-                    color: Palette.primary,
-                    width: 60.w,
-                  ),
-                ),
-              ),
+            ),
+          ),
         )
       ],
     );

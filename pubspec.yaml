@@ -12,39 +12,39 @@ dependencies:
   flutter:
     sdk: flutter
 
-  jiffy: ^5.0.0
-  intl: ^0.18.0
-  flutter_screenutil: ^5.6.1
-  dio: ^5.0.1
-  flutter_svg: ^2.0.2
+  jiffy: ^6.2.2
+  intl: ^0.19.0
+  flutter_screenutil: ^5.9.0
+  dio: ^5.4.0
+  flutter_svg: ^2.0.9
   flutter_rating_bar: ^4.0.1
-  badges: ^3.0.2
+  badges: ^3.1.2
   carousel_slider: ^4.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  google_maps_flutter: ^2.2.5
-  url_launcher: ^6.1.10
+  google_maps_flutter: ^2.5.3
+  url_launcher: ^6.2.4
   transparent_image: ^2.0.1
-  package_info_plus: ^3.0.3
-  flutter_keyboard_visibility: ^5.4.0
-  geolocator: ^9.0.2
-  cached_network_image: ^3.2.3
+  package_info_plus: ^5.0.1
+  flutter_keyboard_visibility: ^6.0.0
+  geolocator: ^10.1.0
+  cached_network_image: ^3.3.1
   readmore: ^2.2.0
-  cloud_firestore: ^4.0.3
-  firebase_auth: ^4.1.0
-  firebase_messaging: ^14.0.3
-  firebase_app_check: ^0.1.1+2
-  firebase_crashlytics: ^3.0.3
-  flutter_local_notifications: ^13.0.0
-  infinite_scroll_pagination: ^3.2.0
+  cloud_firestore: ^4.15.4
+  firebase_auth: ^4.17.4
+  firebase_messaging: ^14.7.15
+  firebase_app_check: ^0.2.1+13
+  firebase_crashlytics: ^3.4.14
+  flutter_local_notifications: ^16.3.2
+  infinite_scroll_pagination: ^4.0.0
 
-  flutter_ringtone_player: ^3.2.0
+  flutter_ringtone_player: ^4.0.0+2
   flutter_dropdown: ^1.0.1+hotfix.1
-  device_info_plus: ^8.1.0
+  device_info_plus: ^9.1.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^3.0.1
 
 flutter:
