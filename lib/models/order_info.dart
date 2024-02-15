@@ -35,7 +35,7 @@ class OrderInfo {
 
   String get totalPriceF {
     double t = deliveryPrice + productPrice;
-    return Utils.formatNumberToCurrency(t);
+    return t.formatNumberToCurrency();
   }
 
   double get totalPrice {
@@ -43,7 +43,7 @@ class OrderInfo {
   }
 
   String get productPriceF {
-    return Utils.formatNumberToCurrency(productPrice);
+    return productPrice.formatNumberToCurrency();
   }
 
   String get productCountF {
@@ -51,7 +51,7 @@ class OrderInfo {
   }
 
   String get deliveryPriceF {
-    return Utils.formatNumberToCurrency(deliveryPrice);
+    return deliveryPrice.formatNumberToCurrency();
   }
 
   String get deliveryWeightF {

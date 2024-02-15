@@ -29,7 +29,7 @@ class CustomImage extends StatelessWidget {
       children: [
         const Center(
           child: CircularProgressIndicator(
-            color: Palette.primary,
+            color: PaletteTheme.primary,
             strokeWidth: 1,
           ),
         ),
@@ -57,12 +57,12 @@ class CustomImage extends StatelessWidget {
             color: Colors.transparent,
           ),
           errorWidget: (context, _, __) => Container(
-            color: Palette.accent,
+            color: PaletteTheme.accent,
             child: Center(
               child: SvgPicture.asset(
                 'assets/images/mapalus.svg',
                 colorFilter:
-                    const ColorFilter.mode(Palette.primary, BlendMode.srcIn),
+                    const ColorFilter.mode(PaletteTheme.primary, BlendMode.srcIn),
                 width: 60.w,
               ),
             ),
@@ -88,7 +88,7 @@ class CustomImage extends StatelessWidget {
         child: Icon(
           Icons.photo,
           size: 30.w,
-          color: Palette.primary,
+          color: PaletteTheme.primary,
         ),
       ),
     );

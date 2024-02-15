@@ -128,7 +128,7 @@ class OrderApp {
 
   String get paymentMethodF {
     if (paymentMethod == "CASH") {
-      return "Bayar ditempat ${Utils.formatNumberToCurrency(paymentAmount)}";
+      return "Bayar ditempat ${paymentAmount.formatNumberToCurrency()}";
     }
     return paymentMethod;
   }

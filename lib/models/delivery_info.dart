@@ -13,18 +13,6 @@ class DeliveryInfo {
   final String _discount;
   PricingModifier pricingModifier;
 
-  String get currentDate => Jiffy.now().format(pattern: "dd/MM/yyyy");
-
-  // final List<List<double>> priceMatrixFromWeight = [
-  //   //[0 - 2Km, >2Km - 4Km, >4Km - 6.5Km, >6.5km - 8Km]
-  //   [6000, 8000, 10000, 20000], //0 - 5Kg
-  //   [12000, 16000, 20000, 40000], // >5Kg - 7Kg
-  //   [18000, 24000, 30000, 80000], // >7Kg - 9Kg
-  //   [27000, 36000, 45000, 120000], // >9Kg - 11Kg
-  // ];
-
-  final List<double> weightMilestones = [5.0, 7.0, 9.0, 11.0];
-
   DeliveryInfo({
     required start,
     required end,
@@ -45,6 +33,10 @@ class DeliveryInfo {
         pricingModifier: PricingModifier.fromJson(json),
       );
 
+  // final List<double> weightMilestones = [5.0, 7.0, 9.0, 11.0];
+
+  String get currentDate => Jiffy.now().format(pattern: "dd/MM/yyyy");
+
   Jiffy get startDate {
     var res = Jiffy.parse("$_start $currentDate", pattern: "HH:mm dd/MM/yyyy");
     return res;
@@ -56,9 +48,6 @@ class DeliveryInfo {
   }
 
   bool get isTomorrow {
-
-
-
     if (id == "NOW") {
       return !Jiffy.now().isBetween(startDate, endDate);
     }
@@ -118,7 +107,8 @@ class DeliveryInfo {
     final calculatedWeightUnit = (weight / perWeightUnit).ceil();
     final weightUnit = calculatedWeightUnit <= 0 ? 1 : calculatedWeightUnit;
 
-    dev.log("distanceUnit $distance / $perDistanceUnit = $distanceUnit unit ceil() | weightUnit $weight / $perWeightUnit = $weightUnit unit ceil()");
+    dev.log(
+        "distanceUnit $distance / $perDistanceUnit = $distanceUnit unit ceil() | weightUnit $weight / $perWeightUnit = $weightUnit unit ceil()");
 
     //based on distance
     fee = (distanceUnit * perDistancePrice) + (weightUnit * perWeightPrice);
@@ -127,10 +117,7 @@ class DeliveryInfo {
     if (res <= 0) {
       res = 0;
     }
-    return Utils.formatNumberToCurrency(
-      res,
-      canBeFree: true,
-    );
+    return res.formatNumberToCurrency(canBeFree: true);
   }
 
   @override

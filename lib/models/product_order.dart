@@ -1,4 +1,3 @@
-
 import '../shared/shared.dart';
 import 'product.dart';
 
@@ -34,7 +33,7 @@ class ProductOrder {
 
   String get totalPriceString {
     String s = totalPrice.toStringAsFixed(2).replaceFirst(".00", "");
-    return Utils.formatNumberToCurrency(int.parse(s));
+    return int.parse(s).formatNumberToCurrency();
   }
 
   Map<String, dynamic> toMap() {

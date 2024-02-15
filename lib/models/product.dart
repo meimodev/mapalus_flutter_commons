@@ -59,19 +59,19 @@ class Product {
       ? ProductStatus.available.name
       : ProductStatus.unavailable.name;
 
-  String get priceF => Utils.formatNumberToCurrency(price);
+  String get priceF => price.formatNumberToCurrency();
 
   double get weight => double.parse(_weight);
 
   String get weightF =>
-      '${Utils.formatNumberToCurrency(weight).replaceFirst('Rp. ', '')} gram';
+      '${weight.formatNumberThousandSeparator()} gram';
 
   // bool get isQuantityNotEditable =>
   //     name.contains("l )") || name.contains("g )");
 
   set weight(double weight) => _weight = weight.toString();
 
-  String get minimumPriceF => Utils.formatNumberToCurrency(minimumPrice);
+  String get minimumPriceF => minimumPrice.formatNumberToCurrency();
 
   @override
   bool operator ==(Object other) =>
