@@ -4,16 +4,16 @@ class Utils {
 
   /// Result in Kilometer
   static double calculateDistance({
-    required double pos1Latitude,
-    required double pos1Longitude,
-    required double pos2Latitude,
-    required double pos2Longitude,
+    required double originLatitude,
+    required double originLongitude,
+    required double destinationLatitude,
+    required double destinationLongitude,
   }) {
-    double lat1 = pos1Latitude;
-    double lat2 = pos2Latitude;
+    double lat1 = originLatitude;
+    double lat2 = destinationLatitude;
 
-    double lon1 = pos1Longitude;
-    double lon2 = pos2Longitude;
+    double lon1 = originLongitude;
+    double lon2 = destinationLongitude;
 
     var earthRadius = 6372.8; // in KiloMeters
     double dLat = (lat2 - lat1) * pi / 180;
