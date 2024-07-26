@@ -5,8 +5,8 @@ homepage: "https//www.mapalusindonesia.com"
 publish_to: 'none'
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.2.6 <4.0.0'
+#  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
@@ -41,10 +41,18 @@ dependencies:
   flutter_ringtone_player: ^4.0.0+2
   flutter_dropdown: ^1.0.1+hotfix.1
   device_info_plus: ^9.1.2
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.11
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
 
 flutter:
+
+# derry config
+scripts: derry.yaml

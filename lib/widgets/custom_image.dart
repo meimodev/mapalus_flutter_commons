@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../mapalus_flutter_commons.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapalus_flutter_commons/shared/theme/theme.dart';
 
 class CustomImage extends StatelessWidget {
   const CustomImage({
@@ -29,7 +31,7 @@ class CustomImage extends StatelessWidget {
       children: [
         const Center(
           child: CircularProgressIndicator(
-            color: PaletteTheme.primary,
+            color: BaseColor.primary3,
             strokeWidth: 1,
           ),
         ),
@@ -57,13 +59,13 @@ class CustomImage extends StatelessWidget {
             color: Colors.transparent,
           ),
           errorWidget: (context, _, __) => Container(
-            color: PaletteTheme.accent,
+            color: BaseColor.accent,
             child: Center(
               child: SvgPicture.asset(
                 'assets/images/mapalus.svg',
                 colorFilter:
-                    const ColorFilter.mode(PaletteTheme.primary, BlendMode.srcIn),
-                width: 60.w,
+                    const ColorFilter.mode(BaseColor.primary3, BlendMode.srcIn),
+                width: BaseSize.w64,
               ),
             ),
           ),
@@ -74,8 +76,8 @@ class CustomImage extends StatelessWidget {
 
   _buildInvalidUrl() {
     return Container(
-      width: 30.w,
-      height: 30.w,
+      width: BaseSize.w32,
+      height: BaseSize.w32,
       // padding: EdgeInsets.symmetric(
       //   horizontal: Insets.medium.w,
       //   vertical: Insets.medium.h,
@@ -87,8 +89,8 @@ class CustomImage extends StatelessWidget {
       child: Center(
         child: Icon(
           Icons.photo,
-          size: 30.w,
-          color: PaletteTheme.primary,
+          size: BaseSize.customRadius(30),
+          color: BaseColor.primary3,
         ),
       ),
     );
