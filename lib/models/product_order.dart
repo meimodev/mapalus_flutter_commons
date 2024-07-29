@@ -38,7 +38,7 @@ class ProductOrder {
 
   Map<String, dynamic> toMap() {
     return {
-      'product': product.toMap(),
+      'product': product.toJson(),
       'quantity': quantity,
       'total_price': totalPrice,
     };
@@ -47,5 +47,5 @@ class ProductOrder {
   ProductOrder.fromMap(Map<String, dynamic> data)
       : quantity = double.parse(data["quantity"].toString()),
         totalPrice = double.parse(data["total_price"].toString()),
-        product = Product.fromMap(data['product']);
+        product = Product.fromJson(data['product']);
 }

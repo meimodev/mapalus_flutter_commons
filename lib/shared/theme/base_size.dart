@@ -65,7 +65,7 @@ class BaseSize {
 
   static customFontSize(double value) => value.sp;
 
-  static double roundnessSmall = 12.0.r;
-  static double roundnessMedium = 30.0.r;
-  static double roundnessBold = 50.0.r;
+  static double roundnessSmall = 6.r;
+  static double roundnessMedium = 12.r;
+  static double roundnessBold = 24.r;
 }

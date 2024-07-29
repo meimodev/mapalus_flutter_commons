@@ -79,4 +79,11 @@ class BaseTypography {
     fontWeight: FontWeight.w500,
     color: BaseColor.primaryText,
   );
+
+  static TextStyle labelSmall = TextStyle(
+    fontFamily: "Roboto",
+    fontSize: 8.sp,
+    fontWeight: FontWeight.w400,
+    color: BaseColor.primaryText,
+  );
 }

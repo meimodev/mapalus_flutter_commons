@@ -100,6 +100,8 @@ class OrderRepo extends OrderRepoContract {
       case OrderStatus.finished:
         timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
         break;
+      case OrderStatus.canceled:
+        timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
     }
 
     final res = await firestore

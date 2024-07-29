@@ -6,7 +6,7 @@ class PartnerRepo {
   Future<Partner> readPartner(String partnerId) async {
     final res = await firestore.readPartner(partnerId);
     final data = res as Map<String, dynamic>;
-    return Partner.fromMap(data);
+    return Partner.fromJson(data);
   }
 
   Future<DeliveryModifiers> getDeliveryModifiers() async {

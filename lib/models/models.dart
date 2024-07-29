@@ -13,3 +13,4 @@ export 'partner.dart';
 export 'delivery_modifiers.dart';
 export 'users_info.dart';
 export 'announcement.dart';
+export 'location.dart';
