@@ -35,4 +35,12 @@ enum ProductType {
   laundry
 }
 
+enum PaymentMethod {
+  @JsonValue("CASH")
+  cash,
+  @JsonValue("TRANSFER")
+  transfer,
+
+}
+
 enum CardSigningState { oneTimePassword, confirmCode, notRegistered }

@@ -2,12 +2,9 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
+import 'package:mapalus_flutter_commons/shared/shared.dart';
 
-import '../shared/shared.dart';
-import 'order_info.dart';
-import 'product_order.dart';
-import 'rating.dart';
-import 'user_app.dart';
 
 class OrderApp {
   String? id;
@@ -19,7 +16,6 @@ class OrderApp {
   DateTime? _confirmTimeStamp;
   DateTime? _deliverTimeStamp;
   DateTime? _finishTimeStamp;
-  Rating? rating;
   UserApp orderingUser;
   UserApp? deliveringUser;
   OrderInfo orderInfo;
@@ -28,7 +24,6 @@ class OrderApp {
   String note;
 
   OrderApp({
-    rating,
     deliveringUser,
     required this.orderingUser,
     required this.products,
@@ -66,13 +61,13 @@ class OrderApp {
             : null,
         products = List<ProductOrder>.from(
           (data['products'] as List<dynamic>).map(
-            (e) => ProductOrder.fromMap(e),
+            (e) => ProductOrder.fromJson(e),
           ),
         ),
-        rating = data['rating'] != null ? Rating.fromMap(data["rating"]) : null,
-        orderingUser = UserApp.fromMap(data['ordering_user']),
+        // rating = data['rating'] != null ? Rating.fromMap(data["rating"]) : null,
+        orderingUser = UserApp.fromJson(data['ordering_user']),
         deliveringUser = data['delivering_user'] != null
-            ? UserApp.fromMap(data['delivering_user'])
+            ? UserApp.fromJson(data['delivering_user'])
             : null,
         paymentMethod = data['payment_method'] ?? '',
         paymentAmount = data['payment_amount'] ?? 0,
@@ -137,7 +132,7 @@ class OrderApp {
   String toString() {
     return 'Order{id: $id, products: $products, '
         'status: $status, _orderTimeStamp: $_orderTimeStamp, '
-        '_finishTimeStamp: $_finishTimeStamp, rating: $rating, '
+        '_finishTimeStamp: $_finishTimeStamp, '
         'orderingUser: $orderingUser, deliveringUser: $deliveringUser, '
         'orderInfo: $orderInfo, paymentMethod: $paymentMethod, '
         'paymentAmount: $paymentAmount, note: $note}';
@@ -146,7 +141,7 @@ class OrderApp {
   Map<String, dynamic> toMap() {
     var productMaps = <Map<String, dynamic>>[];
     for (ProductOrder element in products) {
-      productMaps.add(element.toMap());
+      productMaps.add(element.toJson());
     }
     return {
       'id': id,
@@ -154,9 +149,9 @@ class OrderApp {
       // 'delivery_info': deliveryInfo.toMap(),
       'order_info': orderInfo.toMap(),
       'status': status.name,
-      'rating': rating?.toMap(),
-      'ordering_user': orderingUser.toMap(minify: true),
-      'delivering_user': deliveringUser?.toMap(),
+      // 'rating': rating?.toMap(),
+      'ordering_user': orderingUser.toJson(),
+      'delivering_user': deliveringUser?.toJson(),
       'payment_method': paymentMethod,
       'payment_amount': paymentAmount,
       'note': note,

@@ -1,134 +1,173 @@
-import '../mapalus_flutter_commons.dart';
+import 'dart:async';
+import 'dart:convert';
 
-abstract class OrderRepoContract {
-  Future<OrderApp> createOrder({
-    required List<ProductOrder> products,
-    required UserApp user,
-    required OrderInfo orderInfo,
-    required String paymentMethod,
-    required String note,
-    int paymentAmount,
-  });
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
+import 'package:mapalus_flutter_commons/services/services.dart';
+import 'package:mapalus_flutter_commons/shared/enums.dart';
 
-  Future<OrderApp?> readOrder(String id);
+abstract class OrderRepo {
+  Future<OrderApp> createOrder(PostOrderRequest req);
 
-  Future<List<OrderApp>> readUserOrders(UserApp user);
+  Future<List<OrderApp>> readOrders(GetOrdersRequest req);
 
-  Future<OrderApp> updateOrderStatus({required OrderApp order});
+  Future<OrderApp> updateOrder(UpdateOrderRequest req);
 
-  Future<OrderApp> rateOrder(OrderApp order, Rating rating);
+  Stream<List<ProductOrder>?> exposeLocalProductOrders();
+
+  Future<List<ProductOrder>> readLocalProductOrders();
+
+  void updateLocalProductOrders(List<ProductOrder> productOrders);
 }
 
-class OrderRepo extends OrderRepoContract {
-  FirestoreService firestore = FirestoreService();
+class OrderRepoImpl extends OrderRepo {
+  //coupling with service class, remove later!!!!
+  FirestoreService api = FirestoreService();
+  LocalStorageService localStorageService = LocalStorageService();
+
+  StreamController<List<ProductOrder>?> localProductOrdersStream =
+  StreamController<List<ProductOrder>?>.broadcast();
 
   @override
-  Future<OrderApp> createOrder({
-    required List<ProductOrder> products,
-    required UserApp user,
-    required OrderInfo orderInfo,
-    required String paymentMethod,
-    required String note,
-    int paymentAmount = 0,
-  }) async {
-    final order = OrderApp(
-      orderingUser: user,
-      status: OrderStatus.placed,
-      products: products,
-      orderInfo: orderInfo,
-      paymentMethod: paymentMethod,
-      paymentAmount: paymentAmount,
-      note: note,
-    );
-    await firestore.createOrder(
-      order.generateId(),
-      user.phone,
-      order.toMap(),
-    );
-    //read order again with newly created id
-    await Future.delayed(const Duration(seconds: 1));
-    final createdOrder = await firestore.readOrder(order.id!);
-    return OrderApp.fromMap(createdOrder as Map<String, dynamic>);
+  Future<OrderApp> createOrder(PostOrderRequest req) async {
+    // //Later just accept orders object model then send request that
+    // final order = OrderApp(
+    //   orderingUser: user,
+    //   status: OrderStatus.placed,
+    //   products: products,
+    //   orderInfo: orderInfo,
+    //   paymentMethod: paymentMethod,
+    //   paymentAmount: paymentAmount,
+    //   note: note,
+    // );
+    // await api.createOrder(
+    //   order.generateId(),
+    //   user.phone,
+    //   order.toMap(),
+    // );
+    // //read order again with newly created id
+    // await Future.delayed(const Duration(seconds: 1));
+    // final createdOrder = await api.readOrder(order.id!);
+    // return OrderApp.fromMap(createdOrder as Map<String, dynamic>);
+    // TODO: implement updateOrder
+    throw UnimplementedError();
   }
 
-  @override
-  Future<OrderApp> rateOrder(OrderApp order, Rating rating) async {
-    order.rating = rating;
-    order.status = OrderStatus.finished;
-    final res = await firestore.updateOrder(order.generateId(), {
-      ...order.toMap(),
-      'finish_time_stamp': FieldValue.serverTimestamp(),
-    });
-    final updatedOrder = OrderApp.fromMap(res as Map<String, dynamic>);
-    return updatedOrder;
-  }
+  // // @override
+  // Future<OrderApp> rateOrder(OrderApp order, Rating rating) async {
+  //   // order.rating = rating;
+  //   order.status = OrderStatus.finished;
+  //   final res = await api.updateOrder(order.generateId(), {
+  //     ...order.toMap(),
+  //     'finish_time_stamp': FieldValue.serverTimestamp(),
+  //   });
+  //   final updatedOrder = OrderApp.fromMap(res as Map<String, dynamic>);
+  //   return updatedOrder;
+  // }
 
   @override
-  Future<OrderApp?> readOrder(String id) async {
-    final res = await firestore.readOrder(id);
-    if (res == null) {
-      return null;
-    }
-    final data = res as Map<String, dynamic>;
-    return OrderApp.fromMap(data);
-  }
-
-  @override
-  Future<List<OrderApp>> readUserOrders(UserApp user) async {
-    final res = await firestore.readUserOrders(user.phone);
-    final data =
-        res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
-    return data;
+  Future<List<OrderApp>> readOrders(GetOrdersRequest req) async {
+    // final res = await api.readOrder(id);
+    // if (res == null) {
+    //   return null;
+    // }
+    // final data = res as Map<String, dynamic>;
+    // return OrderApp.fromMap(data);
+    // TODO: implement updateOrder
+    throw UnimplementedError();
   }
 
   @override
-  Future<OrderApp> updateOrderStatus({required OrderApp order}) async {
-    late final Map<String, dynamic> timestamp;
-    switch (order.status) {
-      case OrderStatus.placed:
-        timestamp = {'order_time_stamp': FieldValue.serverTimestamp()};
-        break;
-      case OrderStatus.accepted:
-        timestamp = {'confirm_time_stamp': FieldValue.serverTimestamp()};
-        break;
-      case OrderStatus.rejected:
-        timestamp = {'confirm_time_stamp': FieldValue.serverTimestamp()};
-        break;
-      case OrderStatus.delivered:
-        timestamp = {'deliver_time_stamp': FieldValue.serverTimestamp()};
-        break;
-      case OrderStatus.finished:
-        timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
-        break;
-      case OrderStatus.canceled:
-        timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
-    }
-
-    final res = await firestore
-        .updateOrder(order.id!, {...order.toMap(), ...timestamp});
-    final data = res as Map<String, dynamic>;
-    return Future.value(OrderApp.fromMap(data));
+  Future<OrderApp> updateOrder(UpdateOrderRequest req) {
+    // TODO: implement updateOrder
+    throw UnimplementedError();
   }
 
-  Future<List<OrderApp>> readOrders() async {
-    final res = await firestore.readOrders();
-    final data =
-        res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
-    return data;
+  @override
+  Future<List<ProductOrder>> readLocalOrders() {
+    // TODO: implement readLocalOrders
+    throw UnimplementedError();
   }
 
-  Future<List<OrderApp>> readOrdersToday() async {
-    final res = await firestore.readOrders();
-    final data = res.where((e) {
-      final order = OrderApp.fromMap(e as Map<String, dynamic>);
-      return order.orderTimeStamp.isSame(Jiffy.now(), unit: Unit.day);
-    });
-    return data
-        .map((e) => OrderApp.fromMap(e as Map<String, dynamic>))
-        .toList();
+  @override
+  Future<List<ProductOrder>> updateLocalOrders(
+      List<ProductOrder> productOrders) {
+    // TODO: implement updateLocalOrders
+    throw UnimplementedError();
   }
 
-  Stream broadcastOrders() {
-    return firestore.getOrdersStream();
+  @override
+  Stream<List<ProductOrder>?> exposeLocalProductOrders() {
+    return localProductOrdersStream.stream;
   }
+
+  @override
+  Future<List<ProductOrder>> readLocalProductOrders() {
+    return localStorageService.readProductOrders();
+  }
+
+  @override
+  void updateLocalProductOrders(List<ProductOrder> productOrders) async {
+    await localStorageService.updateProductOrders(productOrders);
+    localProductOrdersStream.add(productOrders);
+  }
+
+// @override
+// Future<List<OrderApp>> readUserOrders(UserApp user) async {
+//   final res = await api.readUserOrders(user.phone);
+//   final data =
+//       res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
+//   return data;
+// }
+
+// @override
+// Future<OrderApp> updateOrderStatus({required OrderApp order}) async {
+//   late final Map<String, dynamic> timestamp;
+//   switch (order.status) {
+//     case OrderStatus.placed:
+//       timestamp = {'order_time_stamp': FieldValue.serverTimestamp()};
+//       break;
+//     case OrderStatus.accepted:
+//       timestamp = {'confirm_time_stamp': FieldValue.serverTimestamp()};
+//       break;
+//     case OrderStatus.rejected:
+//       timestamp = {'confirm_time_stamp': FieldValue.serverTimestamp()};
+//       break;
+//     case OrderStatus.delivered:
+//       timestamp = {'deliver_time_stamp': FieldValue.serverTimestamp()};
+//       break;
+//     case OrderStatus.finished:
+//       timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
+//       break;
+//     case OrderStatus.canceled:
+//       timestamp = {'finish_time_stamp': FieldValue.serverTimestamp()};
+//   }
+//
+//   final res = await api
+//       .updateOrder(order.id!, {...order.toMap(), ...timestamp});
+//   final data = res as Map<String, dynamic>;
+//   return Future.value(OrderApp.fromMap(data));
+// }
+
+// Future<List<OrderApp>> readOrders() async {
+//   final res = await api.readOrders();
+//   final data =
+//       res.map((e) => OrderApp.fromMap(e as Map<String, dynamic>)).toList();
+//   return data;
+// }
+
+// Future<List<OrderApp>> readOrdersToday() async {
+//   final res = await api.readOrders();
+//   final data = res.where((e) {
+//     final order = OrderApp.fromMap(e as Map<String, dynamic>);
+//     return order.orderTimeStamp.isSame(Jiffy.now(), unit: Unit.day);
+//   });
+//   return data
+//       .map((e) => OrderApp.fromMap(e as Map<String, dynamic>))
+//       .toList();
+// }
+
+// Stream broadcastOrders() {
+//   return api.getOrdersStream();
+// }
 }

@@ -1,51 +1,18 @@
-import '../shared/shared.dart';
-import 'product.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
 
-class ProductOrder {
-  Product product;
-  double quantity;
-  double totalPrice;
+part 'product_order.freezed.dart';
 
-  ProductOrder({
-    required this.product,
-    required this.quantity,
-    required this.totalPrice,
-  });
+part 'product_order.g.dart';
 
-  @override
-  String toString() {
-    return 'ProductOrder{product: ${product.toString()}, quantity: $quantity, totalPrice: $totalPrice}';
-  }
+@freezed
+class ProductOrder with _$ProductOrder {
+  const factory ProductOrder({
+    required Product product,
+    @Default(0) int quantity,
+    @Default(0) double totalPrice,
+  }) = _ProductOrder;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ProductOrder && product.id == other.product.id;
-
-  @override
-  int get hashCode =>
-      product.hashCode ^ quantity.hashCode ^ totalPrice.hashCode;
-
-  String get quantityString {
-    String s = quantity.toStringAsFixed(2);
-    return s.replaceFirst(".00", "");
-  }
-
-  String get totalPriceString {
-    String s = totalPrice.toStringAsFixed(2).replaceFirst(".00", "");
-    return int.parse(s).formatNumberToCurrency();
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'product': product.toJson(),
-      'quantity': quantity,
-      'total_price': totalPrice,
-    };
-  }
-
-  ProductOrder.fromMap(Map<String, dynamic> data)
-      : quantity = double.parse(data["quantity"].toString()),
-        totalPrice = double.parse(data["total_price"].toString()),
-        product = Product.fromJson(data['product']);
+  factory ProductOrder.fromJson(Map<String, Object?> json) =>
+      _$ProductOrderFromJson(json);
 }

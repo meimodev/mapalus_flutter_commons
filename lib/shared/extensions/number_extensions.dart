@@ -10,12 +10,19 @@ extension ExtensionDouble on num {
     return str;
   }
 
+  String toKilogram({bool accurate = false}) =>
+      accurate ?
+      "${(this / 1000).toFormatThousand} Kg"
+          : "± ${(this / 1000)
+          .ceil()
+          .toFormatThousand} Kg";
+
   String formatNumberToCurrency({bool canBeFree = false}) {
     var number = this;
     if (number <= 0) {
       number = 0;
     }
-    if (number == 0 ) {
+    if (number == 0) {
       if (canBeFree) {
         return "Gratis";
       }
@@ -26,7 +33,7 @@ extension ExtensionDouble on num {
     return s;
   }
 
-  String formatNumberThousandSeparator() {
+  String get toFormatThousand {
     return formatNumberToCurrency().replaceFirst('Rp. ', '');
   }
 }

@@ -105,7 +105,7 @@ part 'product.freezed.dart';
 
 part 'product.g.dart';
 
-@freezed
+@Freezed(fromJson: true, toJson: true)
 class Product with _$Product {
   const factory Product({
     @Default("") String category,
@@ -125,4 +125,7 @@ class Product with _$Product {
 
   factory Product.fromJson(Map<String, Object?> json) =>
       _$ProductFromJson(json);
+
+
+
 }

@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:async';
+
 
 class Utils {
 
@@ -29,5 +31,24 @@ class Utils {
   static double roundDouble(double value, int places) {
     num mod = pow(10.0, places);
     return ((value * mod).round().toDouble() / mod);
+  }
+}
+
+
+class Debounce {
+  Duration delay;
+  Timer? _timer;
+
+  Debounce(
+      this.delay,
+      );
+
+  call(void Function() callback) {
+    _timer?.cancel();
+    _timer = Timer(delay, callback);
+  }
+
+  dispose() {
+    _timer?.cancel();
   }
 }

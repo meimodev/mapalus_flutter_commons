@@ -41,7 +41,7 @@ class UserRepo extends UserRepoContract {
         final result = await fireStore.getUser(user.phoneNumber!);
         UserApp? userApp = result == null
             ? null
-            : UserApp.fromMap(result as Map<String, dynamic>);
+            : UserApp.fromJson(result as Map<String, dynamic>);
 
         if (userApp != null) {
           dev.log('AuthStateChanges() signed success $signedUser');
@@ -76,7 +76,7 @@ class UserRepo extends UserRepoContract {
         final result = await fireStore.getUser(user.phoneNumber!);
         UserApp? userApp = result == null
             ? null
-            : UserApp.fromMap(result as Map<String, dynamic>);
+            : UserApp.fromJson(result as Map<String, dynamic>);
 
         if (userApp != null) {
           dev.log('idTokenChanges() signed success $signedUser');
@@ -101,7 +101,7 @@ class UserRepo extends UserRepoContract {
     String? name = box.get('name');
     String? phone = box.get('phone');
     if (name != null && phone != null) {
-      signedUser = UserApp(phone: phone, name: name);
+      signedUser = UserApp(uid:"",id:"",phone: phone, name: name, lastActiveTimeStamp: DateTime.now());
     }
   }
 
@@ -153,7 +153,7 @@ class UserRepo extends UserRepoContract {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     await fireStore.updateFcmToken(phone, fcmToken);
     if (signedUser != null) {
-      signedUser!.fcmToken = fcmToken;
+      signedUser =  signedUser!.copyWith(fcmToken: fcmToken!);
     }
   }
 
@@ -173,8 +173,8 @@ class UserRepo extends UserRepoContract {
 
   @override
   Future<UserApp> registerUser(String phone, String name) async {
-    UserApp user = UserApp(phone: phone, name: name.capitalizeByWord());
-    await fireStore.createUser(phone, user.toMap());
+    UserApp user = UserApp(phone: phone, name: name.capitalizeByWord(), uid: '', id: '', lastActiveTimeStamp: DateTime.now());
+    await fireStore.createUser(phone, user.toJson());
     signing(user);
     return Future.value(user);
   }

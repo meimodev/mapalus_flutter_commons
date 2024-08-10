@@ -46,7 +46,7 @@ class UserRepoPartner extends UserRepoPartnerContract {
         _signingBox!.get(_isSignedInKey, defaultValue: false) ;
 
     if (isSigned!) {
-      return UserApp(phone: '089525699078', name: 'Pasar');
+      return UserApp(phone: '089525699078', name: 'Pasar', uid: '', id: '', lastActiveTimeStamp: DateTime.now());
     }
     return null;
   }

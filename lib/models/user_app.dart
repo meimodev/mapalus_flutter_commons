@@ -1,54 +1,25 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
 
-class UserApp {
-  String phone;
-  String name;
-  String deviceInfo;
-  List<String> orders;
+part 'user_app.freezed.dart';
+part 'user_app.g.dart';
 
-  DateTime? lastActiveTimeStamp;
-  String? fcmToken;
+@freezed
+class UserApp with _$UserApp {
+  const factory UserApp({
+    /// from firebase uid
+    required String uid,
+    /// generated from uuid v4
+    @Default("") String partnerId,
+    required String id,
+    required String phone,
+    required String name,
+    @Default("") String deviceInfo,
+    @Default("") String fcmToken,
+    required DateTime lastActiveTimeStamp,
+  }) = _UserApp;
 
-  UserApp({
-    required this.phone,
-    required this.name,
-    this.deviceInfo = "",
-    this.orders = const [],
-    this.lastActiveTimeStamp,
-    this.fcmToken,
-  });
+  factory UserApp.fromJson(Map<String, Object?> json) =>
+      _$UserAppFromJson(json);
 
-  factory UserApp.fromMap(Map<String, dynamic> data) => UserApp(
-        phone: data["phone"],
-        name: data["name"],
-        deviceInfo: data["device_info"] ?? "",
-        orders: data["orders"] != null ? List<String>.from(data["orders"]) : [],
-        lastActiveTimeStamp: data['last_active_time_stamp'] != null
-            ? (data['last_active_time_stamp'] as Timestamp).toDate()
-            : null,
-        fcmToken: data['fcm_token'],
-      );
-
-  @override
-  String toString() {
-    return 'UserApp{phone: $phone, name: $name, deviceInfo: $deviceInfo, '
-        'orders: $orders, lastActiveTimeStamp: ${lastActiveTimeStamp?.toIso8601String()}, '
-        'fcmToken: $fcmToken}';
-  }
-
-  Map<String, dynamic> toMap({minify = false}) {
-    if (minify) {
-      return {
-        'name': name,
-        'phone': phone,
-      };
-    }
-    return {
-      'name': name,
-      'phone': phone,
-      'device_info': deviceInfo,
-      'orders': orders,
-      'fcm_token': fcmToken,
-    };
-  }
 }
