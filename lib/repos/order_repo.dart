@@ -18,6 +18,11 @@ abstract class OrderRepo {
   Future<List<ProductOrder>> readLocalProductOrders();
 
   void updateLocalProductOrders(List<ProductOrder> productOrders);
+
+  void updateLocalNote(String note);
+
+  Future<String> readLocalNote();
+
 }
 
 class OrderRepoImpl extends OrderRepo {
@@ -110,6 +115,16 @@ class OrderRepoImpl extends OrderRepo {
   void updateLocalProductOrders(List<ProductOrder> productOrders) async {
     await localStorageService.updateProductOrders(productOrders);
     localProductOrdersStream.add(productOrders);
+  }
+
+  @override
+  Future<String> readLocalNote() async {
+    return await localStorageService.readNote();
+  }
+
+  @override
+  void updateLocalNote(String note) {
+    return localStorageService.saveNote(note);
   }
 
 // @override

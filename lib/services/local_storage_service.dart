@@ -7,36 +7,29 @@ import 'package:mapalus_flutter_commons/models/models.dart';
 /// the author just choose to using the coupling implementation
 /// to save time but sacrifice good practices
 class LocalStorageService {
-  static const String _boxNameProductOrderLocalStorageBox =
-      "box_name_product_order_local_storage_box";
-
-  static const String boxKeyProductOrders = "box_key_product_orders";
-
-  Future<Box> _openBox(String name)  async {
-    if (Hive.isBoxOpen(name)) {
-      return Hive.box(name);
-    }
-    return await Hive.openBox(name);
-  }
+  final productOrdersBox = Hive.box<String>(HiveKeys.boxProductOrders);
+  final noteBox = Hive.box<String>(HiveKeys.boxNote);
 
   Future<void> saveProductOrders(List<ProductOrder> productOrders) async {
-    final box = await _openBox(_boxNameProductOrderLocalStorageBox);
-    final listMap = productOrders.map<Map<String, dynamic>>((e) => e.toJson())
-        .toList();
 
-    await box.put(
-      boxKeyProductOrders,
+    final listMap =
+        productOrders.map<Map<String, dynamic>>((e) => e.toJson()).toList();
+
+    await productOrdersBox.put(
+      HiveKeys.productOrders,
       jsonEncode(listMap),
     );
   }
 
-
   Future<List<ProductOrder>> readProductOrders() async {
-    final box = await _openBox(_boxNameProductOrderLocalStorageBox);
 
-    final String jsonString = box.get(boxKeyProductOrders);
+    final String? jsonString = productOrdersBox.get(HiveKeys.productOrders) ;
+    if (jsonString == null) {
+      return [];
+    }
     final List<ProductOrder> po = (jsonDecode(jsonString) as List<dynamic>)
-        .map((e) => ProductOrder.fromJson(e as Map<String, dynamic>)).toList();
+        .map((e) => ProductOrder.fromJson(e as Map<String, dynamic>))
+        .toList();
     return po;
   }
 
@@ -45,7 +38,7 @@ class LocalStorageService {
   // }
 
   Future<void> updateProductOrders(List<ProductOrder> productOrders) async {
-    await deleteAll(_boxNameProductOrderLocalStorageBox);
+    // await productOrdersBox.clear();
     await saveProductOrders(productOrders);
   }
 
@@ -53,8 +46,36 @@ class LocalStorageService {
 
   void delete() {}
 
-  Future<void> deleteAll(String boxName) async {
-    final box = await _openBox(_boxNameProductOrderLocalStorageBox);
-    await box.clear();
+
+
+  String readNote()  {
+    final String note = noteBox.get(HiveKeys.note) ?? '' ;
+    return note;
   }
+
+  void saveNote(String note) async {
+    await noteBox.put(HiveKeys.note, note);
+  }
+}
+
+class HiveKeys {
+  static const String boxProductOrders = "box_product_orders";
+  static const String boxNote = "box_note";
+
+  static const String productOrders = "product_orders";
+  static const String note = "note";
+
+}
+
+class HiveService {
+  Future<void> init() async {
+    await Hive.initFlutter('cache');
+    await Hive.openBox<String>(HiveKeys.boxProductOrders);
+    await Hive.openBox<String>(HiveKeys.boxNote);
+  }
+
+  Future<void> close() async {
+    await Hive.close();
+  }
+
 }
