@@ -8,7 +8,7 @@ class PostOrderRequest with _$PostOrderRequest {
   const factory PostOrderRequest({
     required List<ProductOrder> products,
     required UserApp user,
-    required OrderInfo orderInfo,
+    // required OrderInfo orderInfo,
     required String note,
   }) = _PostOrderRequest;
 

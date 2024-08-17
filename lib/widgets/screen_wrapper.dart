@@ -17,6 +17,7 @@ class ScreenWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: backgroundColor ?? BaseColor.cardBackground1,
         body: Padding(
           padding: padding ?? EdgeInsets.only(top: BaseSize.h24),

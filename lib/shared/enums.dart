@@ -40,7 +40,27 @@ enum PaymentMethod {
   cash,
   @JsonValue("TRANSFER")
   transfer,
-
 }
 
 enum CardSigningState { oneTimePassword, confirmCode, notRegistered }
+
+enum DeliveryStatus {
+  @JsonValue("PLACED")
+  placed,
+  @JsonValue("PICKED")
+  picked,
+  @JsonValue("DELIVERED")
+  delivered,
+  @JsonValue("CANCELED")
+  canceled,
+}
+enum PaymentStatus {
+  @JsonValue("PLACED")
+  placed,
+  @JsonValue("PAID")
+  delivered,
+  @JsonValue("EXPIRED")
+  expired,
+  @JsonValue("CANCELED")
+  canceled,
+}

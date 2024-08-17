@@ -57,6 +57,10 @@ extension XDateTime on DateTime {
     return toStringFormatted('EEEE, dd MMMM');
   }
 
+  bool get isPassed{
+    return toJiffy.isSameOrBefore(Jiffy.now()) ;
+  }
+
   List<DateTime> get generateThisWeekDates {
     return [
       ...List.generate(

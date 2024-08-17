@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
-import 'package:mapalus_flutter_commons/shared/enums.dart';
 
 abstract class OrderRepo {
   Future<OrderApp> createOrder(PostOrderRequest req);
@@ -119,7 +116,7 @@ class OrderRepoImpl extends OrderRepo {
 
   @override
   Future<String> readLocalNote() async {
-    return await localStorageService.readNote();
+    return  localStorageService.readNote();
   }
 
   @override

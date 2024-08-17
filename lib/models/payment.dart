@@ -10,6 +10,8 @@ class Payment with _$Payment {
    required String id,
     required String orderId,
     required PaymentMethod method,
+    required PaymentStatus status,
+    required DateTime lastUpdate,
     required int amount,
     required DateTime createdAt,
   }) = _Payment;

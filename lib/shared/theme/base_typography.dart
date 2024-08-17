@@ -73,6 +73,13 @@ class BaseTypography {
     color: BaseColor.primaryText,
   );
 
+  static TextStyle captionSmall = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 8.sp,
+    fontWeight: FontWeight.w400,
+    color: BaseColor.primaryText,
+  );
+
   static TextStyle button = TextStyle(
     fontFamily: fontFamily,
     fontSize: 14.sp,

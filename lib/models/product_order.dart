@@ -9,7 +9,7 @@ part 'product_order.g.dart';
 class ProductOrder with _$ProductOrder {
   const factory ProductOrder({
     required Product product,
-    @Default(0) int quantity,
+    @Default(0) double quantity,
     @Default(0) double totalPrice,
   }) = _ProductOrder;
 

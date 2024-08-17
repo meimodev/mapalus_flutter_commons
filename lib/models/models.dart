@@ -1,7 +1,6 @@
 export 'category.dart';
-export 'delivery_info.dart';
 export 'order_app.dart';
-export 'order_info.dart';
+export 'order_delivery.dart';
 export 'pricing_modifier.dart';
 export 'product.dart';
 export 'product_order.dart';
@@ -15,6 +14,9 @@ export 'users_info.dart';
 export 'announcement.dart';
 export 'location.dart';
 export 'payment.dart';
+export 'delivery_time.dart';
+export 'voucher.dart';
 
 export 'request/request.dart';
 export 'response/response.dart';
+export 'converter/converter.dart';
