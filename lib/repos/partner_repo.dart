@@ -12,11 +12,11 @@ class PartnerRepo {
   Future<DeliveryModifiers> getDeliveryModifiers() async {
     final result = await firestore.readDeliveryModifiers();
     final res = result as Map<String, dynamic>;
-    return DeliveryModifiers.fromMap(res);
+    return DeliveryModifiers.fromJson(res);
   }
 
   Future<void> setDeliveryModifiers(DeliveryModifiers data) async {
-    await firestore.createDeliveryModifiers(data.toMap);
+    await firestore.createDeliveryModifiers(data.toJson());
   }
 
   Future<UsersInfo> getUsersInfo() async {

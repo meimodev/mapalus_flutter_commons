@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
+import 'package:mapalus_flutter_commons/shared/shared.dart';
 
 abstract class OrderRepo {
   Future<OrderApp> createOrder(PostOrderRequest req);
@@ -20,6 +21,12 @@ abstract class OrderRepo {
 
   Future<String> readLocalNote();
 
+  double calculateDeliveryFee(
+    Location origin,
+    Location destination,
+    DeliveryModifiers modifiers,
+    double weight,
+  );
 }
 
 class OrderRepoImpl extends OrderRepo {
@@ -28,7 +35,7 @@ class OrderRepoImpl extends OrderRepo {
   LocalStorageService localStorageService = LocalStorageService();
 
   StreamController<List<ProductOrder>?> localProductOrdersStream =
-  StreamController<List<ProductOrder>?>.broadcast();
+      StreamController<List<ProductOrder>?>.broadcast();
 
   @override
   Future<OrderApp> createOrder(PostOrderRequest req) async {
@@ -116,12 +123,34 @@ class OrderRepoImpl extends OrderRepo {
 
   @override
   Future<String> readLocalNote() async {
-    return  localStorageService.readNote();
+    return localStorageService.readNote();
   }
 
   @override
   void updateLocalNote(String note) {
     return localStorageService.saveNote(note);
+  }
+
+  @override
+  double calculateDeliveryFee(
+    Location origin,
+    Location destination,
+    DeliveryModifiers modifiers,
+    double weight,
+  )  {
+    final distance = Utils.calculateDistance(
+      originLatitude: origin.latitude,
+      originLongitude: origin.longitude,
+      destinationLatitude: destination.latitude,
+      destinationLongitude: destination.longitude,
+    );
+
+    final fixedDistance =
+        distance.toUnitMultiplicationOf(modifiers.distanceUnit);
+    final fixedWeight = weight.toUnitMultiplicationOf(modifiers.weightUnit);
+
+    return fixedDistance * (modifiers.distancePrice) +
+        (fixedWeight * modifiers.weightPrice);
   }
 
 // @override

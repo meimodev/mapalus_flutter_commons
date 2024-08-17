@@ -1,34 +1,18 @@
-class DeliveryModifiers {
-  final double distancePrice;
-  final double distanceUnit;
-  final double weightPrice;
-  final double weightUnit;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  DeliveryModifiers({
-    required this.distancePrice,
-    required this.distanceUnit,
-    required this.weightPrice,
-    required this.weightUnit,
-  });
+part 'delivery_modifiers.freezed.dart';
 
-  factory DeliveryModifiers.fromMap(Map<String, dynamic> data) =>
-      DeliveryModifiers(
-        distancePrice: double.parse(data["distance_price"].toString()),
-        distanceUnit: double.parse(data["distance_unit"].toString()),
-        weightPrice: double.parse(data["weight_price"].toString()),
-        weightUnit: double.parse(data["weight_unit"].toString()),
-      );
+part 'delivery_modifiers.g.dart';
 
-  Map<String, dynamic> get toMap => {
-    "distance_price": distancePrice,
-    "distance_unit": distanceUnit,
-    "weight_price": weightPrice,
-    "weight_unit": weightUnit,
-  };
+@freezed
+class DeliveryModifiers with _$DeliveryModifiers {
+  const factory DeliveryModifiers({
+    @Default(0) double distancePrice,
+    @Default(0) double distanceUnit,
+    @Default(0) double weightPrice,
+    @Default(0) double weightUnit,
+  }) = _DeliveryModifiers;
 
-  @override
-  String toString() {
-    return 'DeliveryModifiers{distancePrice: $distancePrice, distanceUnit: $distanceUnit, '
-        'weightPrice: $weightPrice, weightUnit: $weightUnit}';
-  }
+  factory DeliveryModifiers.fromJson(Map<String, Object?> json) =>
+      _$DeliveryModifiersFromJson(json);
 }

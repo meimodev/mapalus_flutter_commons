@@ -4,7 +4,7 @@ import 'dart:async';
 
 class Utils {
 
-  /// Result in Kilometer
+  ///[INFO] Result in Kilometer
   static double calculateDistance({
     required double originLatitude,
     required double originLongitude,
