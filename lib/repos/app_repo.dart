@@ -6,10 +6,11 @@ class AppRepoContract {}
 class AppRepo extends AppRepoContract {
   FirestoreService firestoreService = FirestoreService();
 
-  Future<List<Map<String, dynamic>>> getDeliveryTimes() async {
+  Future<List<DeliveryTime>> getDeliveryTimes() async {
     final res = await firestoreService.getDeliveryTimes();
     final data = res as Map<String, dynamic>;
-    return List<Map<String, dynamic>>.from(data['deliveries']);
+    final list = List<Map<String, dynamic>>.from(data['deliveries']);
+    return list.map((e) => DeliveryTime.fromJson(e)).toList();
   }
 
   Future<bool> checkIfLatestVersion(bool isMapalus) async {

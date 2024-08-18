@@ -66,7 +66,7 @@ class FirestoreService {
       () => col
           .doc(_keyDocumentDeliveryTimeEnv)
           .get(const GetOptions(source: Source.server)),
-      'checkPhoneRegistration',
+      'getDeliveryTimes',
     );
     return doc?.data();
   }
