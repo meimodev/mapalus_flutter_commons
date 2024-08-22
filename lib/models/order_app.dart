@@ -9,12 +9,16 @@ part 'order_app.g.dart';
 
 @freezed
 class OrderApp with _$OrderApp {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OrderApp({
     required String id,
     @Default([]) List<ProductOrder> products,
     required OrderStatus status,
-    @TimestampToDateTimeConverter() required DateTime lastUpdate,
-    @TimestampToDateTimeConverter() required DateTime createdAt,
+    @TimestampToDateTimeConverter()
+    required DateTime lastUpdate,
+    @TimestampToDateTimeConverter()
+    required DateTime createdAt,
     @Default('') String note,
     required UserApp orderBy,
     required Payment payment,

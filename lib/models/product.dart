@@ -119,7 +119,7 @@ class Product with _$Product {
     @Default(0) double price,
     @Default(ProductStatus.available) ProductStatus status,
     @Default(ProductType.food) ProductType type,
-    @Default("") String unit,
+    @Default(ProductUnit.serve) ProductUnit unit,
     @Default(0) double weight,
   }) = _Product;
 

@@ -1,6 +1,6 @@
 import '../mapalus_flutter_commons.dart';
 
-class ProductRepo  {
+class ProductRepo {
   FirestoreService firestore = FirestoreService();
 
   Future<Product> searchProduct() {
@@ -8,9 +8,28 @@ class ProductRepo  {
     throw UnimplementedError();
   }
 
+  Future<Product> readProduct(String productId) async {
+    //DUMMY DATA
+    return Future.value(
+      Product(
+        customPrice: false,
+        description: "description",
+        id: "00S4JDIkGNF6aozcUuLTMF",
+        name: "Product 1",
+        partnerId: "ssTneIKTUTtnb8L4dGWA",
+        price: 10000,
+        status: ProductStatus.available,
+        type: ProductType.food,
+        unit: ProductUnit.serve,
+        weight: 1000,
+      ),
+    );
+  }
+
   Future<List<Product>> readProducts() async {
     final res = await firestore.readProducts();
-    final data = res.map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
+    final data =
+        res.map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
     return data;
   }
 

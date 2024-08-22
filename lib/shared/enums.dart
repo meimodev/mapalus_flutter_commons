@@ -35,6 +35,14 @@ enum ProductType {
   laundry
 }
 
+enum ProductUnit {
+  @JsonValue("SERVE")
+  serve,
+  @JsonValue("KILOGRAM")
+  kilogram,
+
+}
+
 enum PaymentMethod {
   @JsonValue("CASH")
   cash,

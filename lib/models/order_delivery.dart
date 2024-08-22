@@ -8,16 +8,18 @@ part 'order_delivery.g.dart';
 
 @freezed
 class OrderDelivery with _$OrderDelivery {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory OrderDelivery({
     required String id,
     required double weight,
     required double price,
     required double distance,
     required DeliveryStatus status,
+    @TimestampToDateTimeConverter() required DeliveryTime selectedTime,
     @TimestampToDateTimeConverter() required DateTime lastUpdate,
     required Location destination,
     UserApp? deliverBy,
-    @TimestampToDateTimeConverter() required DeliveryTime selectedTime,
   }) = _OrderDelivery;
 
   factory OrderDelivery.fromJson(Map<String, Object?> json) =>

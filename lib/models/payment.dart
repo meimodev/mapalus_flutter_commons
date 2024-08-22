@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapalus_flutter_commons/shared/enums.dart';
 
+import 'converter/converter.dart';
+
 part 'payment.freezed.dart';
 part 'payment.g.dart';
 
@@ -11,7 +13,7 @@ class Payment with _$Payment {
     required String orderId,
     required PaymentMethod method,
     required PaymentStatus status,
-    required DateTime lastUpdate,
+    @TimestampToDateTimeConverter() required DateTime lastUpdate,
     required int amount,
     required DateTime createdAt,
   }) = _Payment;
