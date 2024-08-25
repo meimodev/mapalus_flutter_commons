@@ -39,9 +39,7 @@ class Debounce {
   Duration delay;
   Timer? _timer;
 
-  Debounce(
-      this.delay,
-      );
+  Debounce(this.delay);
 
   call(void Function() callback) {
     _timer?.cancel();

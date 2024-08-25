@@ -145,10 +145,13 @@ class OrderRepoImpl extends OrderRepo {
       destinationLongitude: destination.longitude,
     );
 
+
     final fixedDistance =
         distance.toUnitMultiplicationOf(modifiers.distanceUnit);
     final fixedWeight = weight.toUnitMultiplicationOf(modifiers.weightUnit);
 
+    print("fixedDistance $fixedDistance * (modifiers.distancePrice ${modifiers.distancePrice}) "
+        "+ (fixedWeight $fixedWeight * modifiers.weightPrice ${modifiers.weightPrice})");
     return fixedDistance * (modifiers.distancePrice) +
         (fixedWeight * modifiers.weightPrice);
   }
