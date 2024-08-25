@@ -52,7 +52,6 @@ dev_dependencies:
   freezed: ^2.5.2
   json_serializable: ^6.8.0
 
-flutter:
 
 # derry config
 scripts: derry.yaml

@@ -7,6 +7,8 @@ part 'delivery_time.g.dart';
 
 @freezed
 class DeliveryTime with _$DeliveryTime {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory DeliveryTime({
     required String id,
     required bool available,

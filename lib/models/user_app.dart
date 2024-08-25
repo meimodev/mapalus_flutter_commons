@@ -6,7 +6,7 @@ part 'user_app.g.dart';
 @freezed
 class UserApp with _$UserApp {
   // ignore: invalid_annotation_target
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory UserApp({
     /// from firebase uid
     required String uid,

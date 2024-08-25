@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:developer' as dev;
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
 import 'package:mapalus_flutter_commons/shared/shared.dart';
@@ -21,9 +21,12 @@ abstract class OrderRepo {
 
   Future<String> readLocalNote();
 
+  void clearLocalProductOrders();
+
+  void clearLocalNote();
+
   double calculateDeliveryFee(
-    Location origin,
-    Location destination,
+    double distance,
     DeliveryModifiers modifiers,
     double weight,
   );
@@ -39,27 +42,9 @@ class OrderRepoImpl extends OrderRepo {
 
   @override
   Future<OrderApp> createOrder(PostOrderRequest req) async {
-    // //Later just accept orders object model then send request that
-    // final order = OrderApp(
-    //   orderingUser: user,
-    //   status: OrderStatus.placed,
-    //   products: products,
-    //   orderInfo: orderInfo,
-    //   paymentMethod: paymentMethod,
-    //   paymentAmount: paymentAmount,
-    //   note: note,
-    // );
-    // await api.createOrder(
-    //   order.generateId(),
-    //   user.phone,
-    //   order.toMap(),
-    // );
-    // //read order again with newly created id
-    // await Future.delayed(const Duration(seconds: 1));
-    // final createdOrder = await api.readOrder(order.id!);
-    // return OrderApp.fromMap(createdOrder as Map<String, dynamic>);
-    // TODO: implement updateOrder
-    throw UnimplementedError();
+    await api.createOrUpdateOrder(req);
+    //TODO trigger notification
+    return req.order;
   }
 
   // // @override
@@ -133,27 +118,30 @@ class OrderRepoImpl extends OrderRepo {
 
   @override
   double calculateDeliveryFee(
-    Location origin,
-    Location destination,
+    double distance,
     DeliveryModifiers modifiers,
     double weight,
-  )  {
-    final distance = Utils.calculateDistance(
-      originLatitude: origin.latitude,
-      originLongitude: origin.longitude,
-      destinationLatitude: destination.latitude,
-      destinationLongitude: destination.longitude,
-    );
-
-
+  ) {
     final fixedDistance =
         distance.toUnitMultiplicationOf(modifiers.distanceUnit);
-    final fixedWeight = weight.toUnitMultiplicationOf(modifiers.weightUnit);
+    final weightInKg =(weight/1000);
+    final fixedWeight = weightInKg.toUnitMultiplicationOf(modifiers.weightUnit);
 
-    print("fixedDistance $fixedDistance * (modifiers.distancePrice ${modifiers.distancePrice}) "
-        "+ (fixedWeight $fixedWeight * modifiers.weightPrice ${modifiers.weightPrice})");
+    dev.log(
+        "distance $distance Km > fixedDistance $fixedDistance fold * (modifiers.distancePrice ${modifiers.distancePrice}) "
+        "+ (weight $weight Kg > fixedWeight $fixedWeight fold * modifiers.weightPrice ${modifiers.weightPrice})");
     return fixedDistance * (modifiers.distancePrice) +
         (fixedWeight * modifiers.weightPrice);
+  }
+
+  @override
+  void clearLocalNote() {
+    localStorageService.deleteNote();
+  }
+
+  @override
+  void clearLocalProductOrders() {
+    localStorageService.deleteProductOrders();
   }
 
 // @override

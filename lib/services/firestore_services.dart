@@ -71,26 +71,12 @@ class FirestoreService {
     return doc?.data();
   }
 
-  Future<bool> createOrder(
-    String orderId,
-    String userPhone,
-    Map<String, dynamic> orderData,
-  ) async {
+  Future<bool> createOrUpdateOrder(PostOrderRequest req) async {
     CollectionReference orders = fireStore.collection(_keyCollectionOrders);
+    final order = req.order;
     await firestoreLogger(
-      () => orders.doc(orderId).set({
-        ...orderData,
-        'order_time_stamp': FieldValue.serverTimestamp(),
-      }),
-      'createOrder',
-    );
-
-    CollectionReference users = fireStore.collection(_keyCollectionUsers);
-    await firestoreLogger(
-      () => users.doc(userPhone.phoneCleanUseZero()).update({
-        "orders": FieldValue.arrayUnion([orderId])
-      }),
-      'update user orders',
+      () => orders.doc(order.id).set(order.toJson()),
+      'createOrUpdateOrder $req',
     );
     return true;
   }
@@ -193,7 +179,7 @@ class FirestoreService {
   Future<Object?> getDeliveryModifiers() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-        app.doc('delivery_fee').get,
+      app.doc('delivery_fee').get,
       'getDeliveryModifiers',
     );
 
@@ -352,10 +338,12 @@ class FirestoreService {
   }
 
   Future<void> updateUserDeviceInfo(
-      String phone, String deviceInfoString) async {
+    String id,
+    String deviceInfoString,
+  ) async {
     final users = fireStore.collection(_keyCollectionUsers);
     await firestoreLogger(
-      () => users.doc(phone.phoneCleanUseZero()).set(
+      () => users.doc(id).set(
         {"device_info": deviceInfoString},
         SetOptions(merge: true),
       ),

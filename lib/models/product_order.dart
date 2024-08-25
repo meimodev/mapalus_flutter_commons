@@ -7,9 +7,9 @@ part 'product_order.g.dart';
 
 @freezed
 class ProductOrder with _$ProductOrder {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory ProductOrder({
-    // ignore: invalid_annotation_target
-    @JsonSerializable(fieldRename: FieldRename.snake)
     required Product product,
     @Default(0) double quantity,
     @Default(0) double totalPrice,

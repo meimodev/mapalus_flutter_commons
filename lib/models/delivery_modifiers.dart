@@ -7,7 +7,7 @@ part 'delivery_modifiers.g.dart';
 @freezed
 class DeliveryModifiers with _$DeliveryModifiers {
   // ignore: invalid_annotation_target
-  @JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory DeliveryModifiers({
     @Default(0) double distancePrice,
     @Default(0) double distanceUnit,

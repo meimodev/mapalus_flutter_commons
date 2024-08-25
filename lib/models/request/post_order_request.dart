@@ -6,10 +6,11 @@ part 'post_order_request.freezed.dart';
 @freezed
 class PostOrderRequest with _$PostOrderRequest {
   const factory PostOrderRequest({
-    required List<ProductOrder> products,
-    required UserApp user,
+    // required List<ProductOrder> products,
+    // required UserApp user,
     // required OrderInfo orderInfo,
-    required String note,
+    // required String note,
+   required OrderApp order,
   }) = _PostOrderRequest;
 
 }

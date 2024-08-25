@@ -8,11 +8,13 @@ part 'partner.g.dart';
 
 @freezed
 class Partner with _$Partner {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Partner({
     required String id,
     required String name,
     @Default("") String image,
-    DateTime? lastActiveTimeStamp,
+    @TimestampToDateTimeConverter() required DateTime lastActiveTimeStamp,
     Location? location,
   }) = _Partner;
 

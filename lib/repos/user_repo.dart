@@ -32,68 +32,68 @@ class UserRepo extends UserRepoContract {
   User? user;
 
   UserRepo() {
-    auth.authStateChanges().listen((User? user) async {
-      this.user = user;
-      if (user != null) {
-        dev.log('AuthStateChanges(), Phone number confirmed');
-
-        // authStatusCalled = true;
-        final result = await fireStore.getUser(user.phoneNumber!);
-        UserApp? userApp = result == null
-            ? null
-            : UserApp.fromJson(result as Map<String, dynamic>);
-
-        if (userApp != null) {
-          dev.log('AuthStateChanges() signed success $signedUser');
-          signing(userApp);
-        } else {
-          // user is not registered
-          if (onUnregisteredUser != null) {
-            onUnregisteredUser!(user.phoneNumber!);
-          }
-          signedUser = null;
-          shouldCallIdChange = true;
-          dev.log(
-              'AuthStateChanges() Phone is not registered ${user.phoneNumber!}');
-        }
-      } else {
-        dev.log('AuthStateChanges() user = null');
-
-        signedUser = null;
-      }
-    });
-    auth.idTokenChanges().listen((user) async {
-      //just called this listener when the auth status is never called
-      if (!shouldCallIdChange) {
-        return;
-      }
-      if (user != null) {
-        dev.log('idTokenChanges(), Phone number confirmed');
-        if (signedUser != null) {
-          dev.log('idTokenChanges(), user already signed');
-          return;
-        }
-        final result = await fireStore.getUser(user.phoneNumber!);
-        UserApp? userApp = result == null
-            ? null
-            : UserApp.fromJson(result as Map<String, dynamic>);
-
-        if (userApp != null) {
-          dev.log('idTokenChanges() signed success $signedUser');
-          signing(userApp);
-        } else {
-          // user is not registered
-          if (onUnregisteredUser != null) {
-            onUnregisteredUser!(user.phoneNumber!);
-          }
-          signedUser = null;
-          dev.log(
-              'idTokenChanges() Phone is not registered ${user.phoneNumber!}');
-        }
-        return;
-      }
-      dev.log("idTokenChanges() Phone not confirmed");
-    });
+    // auth.authStateChanges().listen((User? user) async {
+    //   this.user = user;
+    //   if (user != null) {
+    //     dev.log('AuthStateChanges(), Phone number confirmed');
+    //
+    //     // authStatusCalled = true;
+    //     final result = await fireStore.getUser(user.phoneNumber!);
+    //     UserApp? userApp = result == null
+    //         ? null
+    //         : UserApp.fromJson(result as Map<String, dynamic>);
+    //
+    //     if (userApp != null) {
+    //       dev.log('AuthStateChanges() signed success $signedUser');
+    //       signing(userApp);
+    //     } else {
+    //       // user is not registered
+    //       if (onUnregisteredUser != null) {
+    //         onUnregisteredUser!(user.phoneNumber!);
+    //       }
+    //       signedUser = null;
+    //       shouldCallIdChange = true;
+    //       dev.log(
+    //           'AuthStateChanges() Phone is not registered ${user.phoneNumber!}');
+    //     }
+    //   } else {
+    //     dev.log('AuthStateChanges() user = null');
+    //
+    //     signedUser = null;
+    //   }
+    // });
+    // auth.idTokenChanges().listen((user) async {
+    //   //just called this listener when the auth status is never called
+    //   if (!shouldCallIdChange) {
+    //     return;
+    //   }
+    //   if (user != null) {
+    //     dev.log('idTokenChanges(), Phone number confirmed');
+    //     if (signedUser != null) {
+    //       dev.log('idTokenChanges(), user already signed');
+    //       return;
+    //     }
+    //     final result = await fireStore.getUser(user.phoneNumber!);
+    //     UserApp? userApp = result == null
+    //         ? null
+    //         : UserApp.fromJson(result as Map<String, dynamic>);
+    //
+    //     if (userApp != null) {
+    //       dev.log('idTokenChanges() signed success $signedUser');
+    //       signing(userApp);
+    //     } else {
+    //       // user is not registered
+    //       if (onUnregisteredUser != null) {
+    //         onUnregisteredUser!(user.phoneNumber!);
+    //       }
+    //       signedUser = null;
+    //       dev.log(
+    //           'idTokenChanges() Phone is not registered ${user.phoneNumber!}');
+    //     }
+    //     return;
+    //   }
+    //   dev.log("idTokenChanges() Phone not confirmed");
+    // });
   }
 
   Future<void> checkPreviousSigning() async {
@@ -114,8 +114,8 @@ class UserRepo extends UserRepoContract {
     if (onSignedUser != null) {
       onSignedUser!(user);
     }
-    FirebaseCrashlytics.instance
-        .setUserIdentifier("${user.phone} - ${user.name}");
+    // FirebaseCrashlytics.instance
+    //     .setUserIdentifier("${user.phone} - ${user.name}");
     // var box = Hive.box('user_signing');
     // box.put('name', user.name);
     // box.put('phone', user.phone);
@@ -129,36 +129,36 @@ class UserRepo extends UserRepoContract {
     if (signedUser == null) {
       return;
     }
-    DeviceInfoPlugin dInfo = DeviceInfoPlugin();
-    String deviceInfoString = "";
-
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await dInfo.androidInfo;
-      deviceInfoString = '${androidInfo.manufacturer} '
-          '${androidInfo.model} '
-          'SDK:${androidInfo.version.sdkInt} '
-          '${androidInfo.version.codename} '
-          '${androidInfo.version.release}';
-    }
-    if (Platform.isIOS) {
-      IosDeviceInfo iosInfo = await dInfo.iosInfo;
-      deviceInfoString =
-          '${iosInfo.utsname.machine} ${iosInfo.model} ${iosInfo.name} ${iosInfo.utsname.version}';
-    }
-
-    await fireStore.updateUserDeviceInfo(signedUser!.phone, deviceInfoString);
+    // DeviceInfoPlugin dInfo = DeviceInfoPlugin();
+    // String deviceInfoString = "";
+    //
+    // if (Platform.isAndroid) {
+    //   AndroidDeviceInfo androidInfo = await dInfo.androidInfo;
+    //   deviceInfoString = '${androidInfo.manufacturer} '
+    //       '${androidInfo.model} '
+    //       'SDK:${androidInfo.version.sdkInt} '
+    //       '${androidInfo.version.codename} '
+    //       '${androidInfo.version.release}';
+    // }
+    // if (Platform.isIOS) {
+    //   IosDeviceInfo iosInfo = await dInfo.iosInfo;
+    //   deviceInfoString =
+    //       '${iosInfo.utsname.machine} ${iosInfo.model} ${iosInfo.name} ${iosInfo.utsname.version}';
+    // }
+    //
+    // await fireStore.updateUserDeviceInfo(signedUser!.id, deviceInfoString);
   }
 
   Future<void> updateFcmToken(String phone) async {
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    await fireStore.updateFcmToken(phone, fcmToken);
-    if (signedUser != null) {
-      signedUser =  signedUser!.copyWith(fcmToken: fcmToken!);
-    }
+    // final fcmToken = await FirebaseMessaging.instance.getToken();
+    // await fireStore.updateFcmToken(phone, fcmToken);
+    // if (signedUser != null) {
+    //   signedUser =  signedUser!.copyWith(fcmToken: fcmToken!);
+    // }
   }
 
   Future<void> updateLastActiveTimeStamp(String phone) async {
-    await fireStore.updateLastActiveTimeStamp(phone);
+    // await fireStore.updateLastActiveTimeStamp(phone);
   }
 
   @override

@@ -6,6 +6,8 @@ part 'location.g.dart';
 
 @freezed
 class Location with _$Location {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Location({
     @Default(0) double latitude,
     @Default(0) double longitude,

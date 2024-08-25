@@ -105,8 +105,10 @@ part 'product.freezed.dart';
 
 part 'product.g.dart';
 
-@Freezed(fromJson: true, toJson: true)
+@freezed
 class Product with _$Product {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Product({
     @Default("") String category,
     @Default(false) bool customPrice,

@@ -11,7 +11,6 @@ class LocalStorageService {
   final noteBox = Hive.box<String>(HiveKeys.boxNote);
 
   Future<void> saveProductOrders(List<ProductOrder> productOrders) async {
-
     final listMap =
         productOrders.map<Map<String, dynamic>>((e) => e.toJson()).toList();
 
@@ -22,8 +21,7 @@ class LocalStorageService {
   }
 
   Future<List<ProductOrder>> readProductOrders() async {
-
-    final String? jsonString = productOrdersBox.get(HiveKeys.productOrders) ;
+    final String? jsonString = productOrdersBox.get(HiveKeys.productOrders);
     if (jsonString == null) {
       return [];
     }
@@ -44,12 +42,18 @@ class LocalStorageService {
 
   void read() {}
 
-  void delete() {}
+  void deleteNote() async {
+    await noteBox.clear();
+    await noteBox.deleteFromDisk();
+  }
 
+  void deleteProductOrders() async {
+    await productOrdersBox.clear();
+    await productOrdersBox.deleteFromDisk();
+  }
 
-
-  String readNote()  {
-    final String note = noteBox.get(HiveKeys.note) ?? '' ;
+  String readNote() {
+    final String note = noteBox.get(HiveKeys.note) ?? '';
     return note;
   }
 
@@ -64,7 +68,6 @@ class HiveKeys {
 
   static const String productOrders = "product_orders";
   static const String note = "note";
-
 }
 
 class HiveService {
@@ -77,5 +80,4 @@ class HiveService {
   Future<void> close() async {
     await Hive.close();
   }
-
 }
