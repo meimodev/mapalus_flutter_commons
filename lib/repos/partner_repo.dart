@@ -31,4 +31,10 @@ class PartnerRepo {
     return UsersInfo.fromMap(res);
   }
 
+  Future<List<Partner>> readPartnersForHome()async{
+    final result = await firestore.getPartners(const GetPartnerRequest());
+    return result.map((e) => Partner.fromJson(e as Map<String, dynamic>)).toList();
+
+  }
+
 }

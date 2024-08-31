@@ -44,12 +44,10 @@ class LocalStorageService {
 
   void deleteNote() async {
     await noteBox.clear();
-    await noteBox.deleteFromDisk();
   }
 
   void deleteProductOrders() async {
     await productOrdersBox.clear();
-    await productOrdersBox.deleteFromDisk();
   }
 
   String readNote() {

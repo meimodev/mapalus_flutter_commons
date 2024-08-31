@@ -387,4 +387,43 @@ class FirestoreService {
 
     return doc!.data();
   }
+
+  Future<List<Object?>> getPartners(GetPartnerRequest req) async{
+    final col = fireStore.collection(_keyCollectionPartners);
+
+    if(req.partnerId.isNotEmpty){
+      col.where('id', isEqualTo: req.partnerId);
+    }
+    if(req.limit > 0){
+      col.limit(req.limit);
+    }
+
+    QuerySnapshot<Map<String, dynamic>>? users = await firestoreLogger(
+      col.get,
+      'getPartners GetPartnerRequest= $req',
+    );
+
+    return users?.docs.map((e) => e.data()).toList() ?? [];
+  }
+
+  Future<List<Object?>> getProducts(GetProductRequest req) async {
+    final products = fireStore.collection(_keyCollectionProducts);
+
+    if(req.partnerId.isNotEmpty){
+      products.where("partner_id", isEqualTo: req.partnerId);
+    }
+
+    if(req.limit > 0){
+      products.limit(req.limit);
+    }
+
+
+    QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
+      products.get,
+      'getProducts $req',
+    );
+
+    final res = docs!.docs.map((e) => e.data()).toList();
+    return res;
+  }
 }

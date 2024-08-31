@@ -9,28 +9,17 @@ class ProductRepo {
   }
 
   Future<Product> readProduct(String productId) async {
-    //DUMMY DATA
-    return Future.value(
-      Product(
-        customPrice: false,
-        description: "description",
-        id: "00S4JDIkGNF6aozcUuLTMF",
-        name: "Product 1",
-        partnerId: "ssTneIKTUTtnb8L4dGWA",
-        price: 10000,
-        status: ProductStatus.available,
-        type: ProductType.food,
-        unit: ProductUnit.serve,
-        weight: 1000,
-      ),
+    final result = await firestore.getProducts(
+      GetProductRequest(productId: productId),
     );
+    return Product.fromJson(result.first as Map<String, dynamic>);
   }
 
-  Future<List<Product>> readProducts() async {
-    final res = await firestore.readProducts();
-    final data =
-        res.map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
-    return data;
+  Future<List<Product>> readProducts(GetProductRequest req) async {
+    final result = await firestore.getProducts(req);
+    return result
+        .map((e) => Product.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<Product> updateProduct(Product product) async {
@@ -47,5 +36,12 @@ class ProductRepo {
 
   Future<void> deleteProduct(String productId) async {
     await firestore.deleteProduct(productId);
+  }
+
+  Future<List<Product>> readProductsForHome() async {
+    final result = await firestore.getProducts(const GetProductRequest());
+    return result
+        .map((e) => Product.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }
