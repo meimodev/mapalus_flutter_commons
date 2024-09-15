@@ -15,6 +15,7 @@ class InputVariantDropdownWidget extends StatefulWidget {
     required this.onPressedWithResult,
     this.borderColor,
     this.endIcon,
+    this.backgroundColor,
   });
 
   final String hint;
@@ -24,6 +25,7 @@ class InputVariantDropdownWidget extends StatefulWidget {
   final Future<String?> Function() onPressedWithResult;
   final IconData? endIcon;
   final Color? borderColor;
+  final Color? backgroundColor;
 
   @override
   State<InputVariantDropdownWidget> createState() =>
@@ -60,7 +62,7 @@ class _InputVariantDropdownWidgetState
             width: 2,
           ),
         ),
-        color: BaseColor.cardBackground1,
+        color: widget.backgroundColor ?? BaseColor.cardBackground1,
         child: InkWell(
           onTap: () async {
             final String? result = await widget.onPressedWithResult();

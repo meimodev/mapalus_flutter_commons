@@ -29,11 +29,11 @@ extension XDateTime on DateTime {
     return generateThisWeekDates.last;
   }
 
-  DateTime get toStartOfTheDay{
+  DateTime get toStartOfTheDay {
     return toJiffy.startOf(Unit.day).dateTime;
   }
 
-  DateTime get toEndOfTheDay{
+  DateTime get toEndOfTheDay {
     return toJiffy.endOf(Unit.day).dateTime;
   }
 
@@ -57,8 +57,13 @@ extension XDateTime on DateTime {
     return toStringFormatted('EEEE, dd MMMM');
   }
 
-  bool get isPassed{
-    return toJiffy.isSameOrBefore(Jiffy.now()) ;
+  // ignore: non_constant_identifier_names
+  String get EddMMMHHmm {
+    return toStringFormatted('E, dd MMM HH:mm');
+  }
+
+  bool get isPassed {
+    return toJiffy.isSameOrBefore(Jiffy.now());
   }
 
   List<DateTime> get generateThisWeekDates {

@@ -2,31 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:mapalus_flutter_commons/shared/shared.dart';
 
 class InputVariantTextWidget extends StatelessWidget {
-  const InputVariantTextWidget({
-    super.key,
-    this.controller,
-    this.onChanged,
-    this.maxLines,
-    this.hint,
-    this.endIcon,
-    this.textInputType,
-    this.borderColor,
-  });
+  const InputVariantTextWidget(
+      {super.key,
+      this.controller,
+      this.onChanged,
+      this.maxLines,
+      this.hint,
+      this.endIcon,
+      this.textInputType,
+      this.borderColor,
+      this.startIcon,
+      this.backgroundColor});
 
   final TextEditingController? controller;
   final void Function(String value)? onChanged;
   final int? maxLines;
   final String? hint;
   final IconData? endIcon;
+  final IconData? startIcon;
   final TextInputType? textInputType;
   final Color? borderColor;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: BaseSize.w12),
       decoration: BoxDecoration(
-        color: BaseColor.cardBackground1,
+        color: backgroundColor ?? BaseColor.cardBackground1,
         border: Border.all(color: borderColor ?? Colors.transparent),
         borderRadius: BorderRadius.circular(
           BaseSize.radiusMd,
@@ -35,8 +38,9 @@ class InputVariantTextWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          _buildSideIcon(true, startIcon),
           Expanded(child: _buildTextFormFiled()),
-          endIcon == null ? const SizedBox() : _buildEndIcon(),
+          _buildSideIcon(false, endIcon),
         ],
       ),
     );
@@ -57,12 +61,14 @@ class InputVariantTextWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildEndIcon() {
+  Widget _buildSideIcon(bool startPosition, IconData? icon) {
+    if (icon == null) return const SizedBox();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Gap.w12,
-        Icon(endIcon, size: BaseSize.w12),
+        startPosition ? const SizedBox() : Gap.w12,
+        Icon(icon, size: BaseSize.w12),
+        startPosition ? Gap.w12 : const SizedBox(),
       ],
     );
   }

@@ -40,7 +40,6 @@ enum ProductUnit {
   serve,
   @JsonValue("KILOGRAM")
   kilogram,
-
 }
 
 enum PaymentMethod {
@@ -62,6 +61,7 @@ enum DeliveryStatus {
   @JsonValue("CANCELED")
   canceled,
 }
+
 enum PaymentStatus {
   @JsonValue("PLACED")
   placed,
@@ -71,4 +71,11 @@ enum PaymentStatus {
   expired,
   @JsonValue("CANCELED")
   canceled,
+}
+
+enum StreamDataWrapperOperation {
+  create,
+  read,
+  update,
+  delete,
 }

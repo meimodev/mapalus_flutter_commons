@@ -1,10 +1,8 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/shared/shared.dart';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'order_app.freezed.dart';
-
 part 'order_app.g.dart';
 
 @freezed
@@ -14,6 +12,7 @@ class OrderApp with _$OrderApp {
   const factory OrderApp({
     required String id,
     required List<ProductOrder> products,
+    required String partnerId,
     required OrderStatus status,
     @TimestampToDateTimeConverter() required DateTime lastUpdate,
     @TimestampToDateTimeConverter() required DateTime createdAt,
@@ -28,7 +27,6 @@ class OrderApp with _$OrderApp {
   factory OrderApp.fromJson(Map<String, Object?> json) =>
       _$OrderAppFromJson(json);
 }
-
 
 // OrderApp({
 //   deliveringUser,

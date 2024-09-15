@@ -3,9 +3,20 @@ import '../mapalus_flutter_commons.dart';
 class ProductRepo {
   FirestoreService firestore = FirestoreService();
 
-  Future<Product> searchProduct() {
-    // TODO: implement searchProduct
-    throw UnimplementedError();
+  /// currently using on device search, change later to backend search
+  Future<List<Product>> searchProduct(
+      List<Product> allProducts, String searchText) {
+    return Future.value(
+      allProducts
+          .where(
+            (element) => searchText.isEmpty
+                ? true
+                : element.name.toLowerCase().contains(
+                      searchText.toLowerCase(),
+                    ),
+          )
+          .toList(),
+    );
   }
 
   Future<Product> readProduct(String productId) async {
@@ -20,6 +31,13 @@ class ProductRepo {
     return result
         .map((e) => Product.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  Stream<List<Product>> readProductsStream(GetProductRequest req) {
+    final products = firestore.exposeProducts(req);
+    return products.map(
+      (event) => event.map(Product.fromJson).toList(),
+    );
   }
 
   Future<Product> updateProduct(Product product) async {
@@ -38,10 +56,10 @@ class ProductRepo {
     await firestore.deleteProduct(productId);
   }
 
-  Future<List<Product>> readProductsForHome() async {
-    final result = await firestore.getProducts(const GetProductRequest());
-    return result
-        .map((e) => Product.fromJson(e as Map<String, dynamic>))
-        .toList();
-  }
+// Future<List<Product>> readProductsForHome() async {
+//   final result = await firestore.getProducts(const GetProductRequest());
+//   return result
+//       .map((e) => Product.fromJson(e as Map<String, dynamic>))
+//       .toList();
+// }
 }

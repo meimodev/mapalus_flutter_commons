@@ -21,13 +21,14 @@ class InputWidget extends StatefulWidget {
     this.controller,
     this.currentInputValue,
     this.endIcon,
+    this.startIcon,
     this.textInputType,
     this.borderColor,
     this.errorText,
+    this.backgroundColor,
     this.autoValidateMode = AutovalidateMode.always,
     this.validators,
-  })
-      : onPressedWithResult = null,
+  })  : onPressedWithResult = null,
         options = null,
         variant = InputWidgetVariant.text;
 
@@ -40,11 +41,12 @@ class InputWidget extends StatefulWidget {
     this.currentInputValue,
     this.options,
     this.endIcon,
+    this.startIcon,
     this.errorText,
+    this.backgroundColor,
     this.autoValidateMode = AutovalidateMode.always,
     this.validators,
-  })
-      : controller = null,
+  })  : controller = null,
         maxLines = 1,
         textInputType = null,
         borderColor = null,
@@ -59,17 +61,18 @@ class InputWidget extends StatefulWidget {
     this.errorText,
     this.autoValidateMode = AutovalidateMode.always,
     this.validators,
-  })
-      : variant = InputWidgetVariant.binaryOption,
+  })  : variant = InputWidgetVariant.binaryOption,
         endIcon = null,
+        startIcon = null,
         maxLines = null,
         hint = null,
         controller = null,
         onPressedWithResult = null,
         borderColor = null,
+        backgroundColor = null,
         textInputType = null,
         assert(options != null && options.length > 0,
-        "options cannot be null or empty");
+            "options cannot be null or empty");
 
   final int? maxLines;
   final String? hint;
@@ -81,7 +84,9 @@ class InputWidget extends StatefulWidget {
   //variant text
   final TextEditingController? controller;
   final IconData? endIcon;
+  final IconData? startIcon;
   final Color? borderColor;
+  final Color? backgroundColor;
   final Future<String?> Function()? onPressedWithResult;
   final String? currentInputValue;
   final List<String>? options;
@@ -96,7 +101,7 @@ class InputWidget extends StatefulWidget {
 
 class _InputWidgetState extends State<InputWidget> {
   String errorMessage = '';
-
+  final Debounce debounce = Debounce(const Duration(milliseconds: 400));
 
   @override
   void initState() {
@@ -117,16 +122,17 @@ class _InputWidgetState extends State<InputWidget> {
   }
 
   void onChanged(String val) {
-    validateInput(val);
-    if (widget.onChanged != null) {
-      widget.onChanged!(val);
-    }
+    debounce.call(() {
+      validateInput(val);
+      if (widget.onChanged != null) {
+        widget.onChanged!(val);
+      }
+    });
   }
 
-  Color? get borderColor =>
-      errorMessage.isNotEmpty
-          ? BaseColor.error.withOpacity(.5)
-          : widget.borderColor;
+  Color? get borderColor => errorMessage.isNotEmpty
+      ? BaseColor.error.withOpacity(.5)
+      : widget.borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -136,35 +142,37 @@ class _InputWidgetState extends State<InputWidget> {
         _buildLabelWidget(),
         widget.variant == InputWidgetVariant.binaryOption
             ? InputVariantBinaryOptionWidget(
-          options: widget.options!,
-          currentInputValue: widget.currentInputValue,
-          onChanged: onChanged,
-          borderColor: borderColor,
-        )
+                options: widget.options!,
+                currentInputValue: widget.currentInputValue,
+                onChanged: onChanged,
+                borderColor: borderColor,
+              )
             : const SizedBox(),
         widget.variant == InputWidgetVariant.dropdown
             ? InputVariantDropdownWidget(
-          hint: widget.hint!,
-          options: widget.options ?? [],
-          currentInputValue: widget.currentInputValue,
-          onChanged: onChanged,
-          onPressedWithResult: widget.onPressedWithResult!,
-          endIcon: widget.endIcon,
-          borderColor: borderColor,
-        )
+                hint: widget.hint!,
+                options: widget.options ?? [],
+                currentInputValue: widget.currentInputValue,
+                onChanged: onChanged,
+                onPressedWithResult: widget.onPressedWithResult!,
+                endIcon: widget.endIcon,
+                borderColor: borderColor,
+                backgroundColor: widget.backgroundColor,
+              )
             : const SizedBox(),
         widget.variant == InputWidgetVariant.text
             ? InputVariantTextWidget(
-          onChanged: onChanged,
-          maxLines: widget.maxLines,
-          hint: widget.hint,
-          controller: widget.controller,
-          endIcon: widget.endIcon,
-          textInputType: widget.textInputType,
-          borderColor: borderColor,
-          // autoValidateMode: widget.autoValidateMode,
-          // validators: widget.validators,
-        )
+                onChanged: onChanged,
+                maxLines: widget.maxLines,
+                hint: widget.hint,
+                controller: widget.controller,
+                endIcon: widget.endIcon,
+                textInputType: widget.textInputType,
+                borderColor: borderColor,
+                backgroundColor: widget.backgroundColor,
+                // autoValidateMode: widget.autoValidateMode,
+                // validators: widget.validators,
+              )
             : const SizedBox(),
         _buildErrorWidget(),
       ],

@@ -1,5 +1,6 @@
-import '../mapalus_flutter_commons.dart';
 import 'dart:developer' as dev;
+
+import '../mapalus_flutter_commons.dart';
 
 class FirestoreService {
   FirebaseFirestore fireStore;
@@ -15,8 +16,8 @@ class FirestoreService {
 
   final String _keyDocumentDeliveryTimeEnv = '-env';
 
-  dynamic firestoreLogger(
-    dynamic Function() request,
+  dynamic firestoreLogger<T>(
+    T Function() request,
     String? operation,
   ) async {
     operation = operation ?? 'logging';
@@ -186,11 +187,27 @@ class FirestoreService {
     return doc!.data();
   }
 
-  Future<List<Object?>> readOrders() async {
+  Future<List<Object?>> readOrders(GetOrdersRequest req) async {
     final col = fireStore.collection(_keyCollectionOrders);
+
+    if (req.userApp != null) {
+      col.where(
+        'order_by.id',
+        isEqualTo: req.userApp!.id,
+      );
+    }
+
+    if (req.partner != null) {
+      col.where('partner.id', isEqualTo: req.partner!.id);
+    }
+
+    if (req.productIds.isNotEmpty) {
+      col.where('id', whereIn: req.productIds);
+    }
+
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
       col.get,
-      'readOrders',
+      'readOrders $req',
     );
 
     if (docs == null) {
@@ -223,19 +240,9 @@ class FirestoreService {
   Future<Object?> createProduct(Map<String, dynamic> data) async {
     final products = fireStore.collection(_keyCollectionProducts);
 
-    final doc = await products.add(data);
-
-    final designatedId = doc.id;
-    data['id'] = designatedId;
     await firestoreLogger(
-      () => products.doc(designatedId).set(data),
+      () async => await products.add(data),
       'createProduct',
-    );
-
-    final app = fireStore.collection(_keyCollectionApp);
-    await firestoreLogger(
-      () => app.doc('product').set({'count': FieldValue.increment(1)}),
-      'increment product count',
     );
 
     return data;
@@ -388,13 +395,13 @@ class FirestoreService {
     return doc!.data();
   }
 
-  Future<List<Object?>> getPartners(GetPartnerRequest req) async{
+  Future<List<Object?>> getPartners(GetPartnerRequest req) async {
     final col = fireStore.collection(_keyCollectionPartners);
 
-    if(req.partnerId.isNotEmpty){
+    if (req.partnerId.isNotEmpty) {
       col.where('id', isEqualTo: req.partnerId);
     }
-    if(req.limit > 0){
+    if (req.limit > 0) {
       col.limit(req.limit);
     }
 
@@ -409,21 +416,46 @@ class FirestoreService {
   Future<List<Object?>> getProducts(GetProductRequest req) async {
     final products = fireStore.collection(_keyCollectionProducts);
 
-    if(req.partnerId.isNotEmpty){
+    if (req.partnerId.isNotEmpty) {
       products.where("partner_id", isEqualTo: req.partnerId);
     }
 
-    if(req.limit > 0){
+    if (req.limit > 0) {
       products.limit(req.limit);
     }
-
 
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
       products.get,
       'getProducts $req',
     );
 
-    final res = docs!.docs.map((e) => e.data()).toList();
+    return docs?.docs.map((e) => e.data()).toList() ?? [];
+  }
+
+  Stream<List<Map<String, dynamic>>> exposeProducts(GetProductRequest req) {
+    final products = fireStore.collection(_keyCollectionProducts);
+
+    if (req.partnerId.isNotEmpty) {
+      products.where("partner_id", isEqualTo: req.partnerId);
+    }
+
+    if (req.limit > 0) {
+      products.limit(req.limit);
+    }
+
+    firestoreLogger(
+      () {},
+      'exposeProducts $req',
+    );
+
+    final res = products.snapshots().map(
+          (event) => event.docs
+              .map(
+                (element) => element.data(),
+              )
+              .toList(),
+        );
+
     return res;
   }
 }

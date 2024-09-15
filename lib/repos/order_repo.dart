@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as dev;
+
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
 import 'package:mapalus_flutter_commons/shared/shared.dart';
@@ -47,28 +48,12 @@ class OrderRepoImpl extends OrderRepo {
     return req.order;
   }
 
-  // // @override
-  // Future<OrderApp> rateOrder(OrderApp order, Rating rating) async {
-  //   // order.rating = rating;
-  //   order.status = OrderStatus.finished;
-  //   final res = await api.updateOrder(order.generateId(), {
-  //     ...order.toMap(),
-  //     'finish_time_stamp': FieldValue.serverTimestamp(),
-  //   });
-  //   final updatedOrder = OrderApp.fromMap(res as Map<String, dynamic>);
-  //   return updatedOrder;
-  // }
-
   @override
   Future<List<OrderApp>> readOrders(GetOrdersRequest req) async {
-    // final res = await api.readOrder(id);
-    // if (res == null) {
-    //   return null;
-    // }
-    // final data = res as Map<String, dynamic>;
-    // return OrderApp.fromMap(data);
-    // TODO: implement updateOrder
-    throw UnimplementedError();
+    final res = await api.readOrders(req);
+    return res
+        .map((e) => OrderApp.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   @override
@@ -124,7 +109,7 @@ class OrderRepoImpl extends OrderRepo {
   ) {
     final fixedDistance =
         distance.toUnitMultiplicationOf(modifiers.distanceUnit);
-    final weightInKg =(weight/1000);
+    final weightInKg = (weight / 1000);
     final fixedWeight = weightInKg.toUnitMultiplicationOf(modifiers.weightUnit);
 
     dev.log(
