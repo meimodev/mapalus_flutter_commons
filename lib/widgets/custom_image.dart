@@ -15,7 +15,7 @@ class CustomImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl.isEmpty) {
+    if (imageUrl.isEmpty || !imageUrl.contains("http")) {
       return _buildInvalidUrl();
     }
 
@@ -35,26 +35,9 @@ class CustomImage extends StatelessWidget {
             strokeWidth: 1,
           ),
         ),
-        // FadeInImage.memoryNetwork(
-        //   placeholder: kTransparentImage,
-        //   image: imageUrl,
-        //   imageErrorBuilder: (context, _, __) {
-        //     return Container(
-        //       color: Palette.accent,
-        //       child: Center(
-        //         child: SvgPicture.asset(
-        //           'assets/images/mapalus.svg',
-        //           color: Palette.primary,
-        //           width: 60.w,
-        //         ),
-        //       ),
-        //     );
-        //   },
-        //   fit: BoxFit.cover,
-        // ),
         CachedNetworkImage(
           imageUrl: imageUrl,
-          fadeInDuration: const Duration(milliseconds: 600),
+          fadeInDuration: const Duration(milliseconds: 400),
           placeholder: (context, _) => Container(
             color: Colors.transparent,
           ),
@@ -78,10 +61,6 @@ class CustomImage extends StatelessWidget {
     return Container(
       width: BaseSize.w32,
       height: BaseSize.w32,
-      // padding: EdgeInsets.symmetric(
-      //   horizontal: Insets.medium.w,
-      //   vertical: Insets.medium.h,
-      // ),
       decoration: const BoxDecoration(
         color: Colors.transparent,
         shape: BoxShape.circle,

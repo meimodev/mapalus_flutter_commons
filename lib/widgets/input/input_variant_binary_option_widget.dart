@@ -8,12 +8,14 @@ class InputVariantBinaryOptionWidget extends StatefulWidget {
     this.currentInputValue,
     required this.onChanged,
     this.borderColor,
+    this.backgroundColor,
   });
 
   final List<String> options;
   final String? currentInputValue;
   final ValueChanged<String> onChanged;
   final Color? borderColor;
+  final Color? backgroundColor;
 
   @override
   State<InputVariantBinaryOptionWidget> createState() =>
@@ -67,7 +69,7 @@ class _InputVariantBinaryOptionWidgetState
                 ),
                 color: e == active
                     ? BaseColor.primary3
-                    : BaseColor.cardBackground1,
+                    : widget.backgroundColor ?? BaseColor.cardBackground1,
                 child: InkWell(
                   onTap: e == active
                       ? null
@@ -84,11 +86,7 @@ class _InputVariantBinaryOptionWidgetState
                     child: Center(
                       child: Text(
                         e,
-                        style: BaseTypography.bodyMedium.bold.copyWith(
-                          color: e == active
-                              ? BaseColor.cardBackground1
-                              : BaseColor.primary3,
-                        ),
+                        style: BaseTypography.bodyMedium.copyWith(),
                       ),
                     ),
                   ),

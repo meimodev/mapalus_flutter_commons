@@ -56,10 +56,8 @@ class ProductRepo {
     await firestore.deleteProduct(productId);
   }
 
-// Future<List<Product>> readProductsForHome() async {
-//   final result = await firestore.getProducts(const GetProductRequest());
-//   return result
-//       .map((e) => Product.fromJson(e as Map<String, dynamic>))
-//       .toList();
-// }
+  Future<List<String>> getCategories() async {
+    final result = await firestore.getProductCategories();
+    return result;
+  }
 }

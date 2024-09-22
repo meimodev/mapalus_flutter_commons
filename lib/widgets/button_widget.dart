@@ -6,10 +6,12 @@ class ButtonWidget extends StatelessWidget {
     super.key,
     this.onPressed,
     required this.text,
+    this.padding,
   });
 
   final VoidCallback? onPressed;
   final String text;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +22,14 @@ class ButtonWidget extends StatelessWidget {
       child: InkWell(
         onTap: onPressed,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: BaseSize.w16,
-            vertical: BaseSize.h8,
-          ),
+          padding: padding ??
+              EdgeInsets.symmetric(
+                horizontal: BaseSize.w16,
+                vertical: BaseSize.h8,
+              ),
           child: Text(
             text,
+            textAlign: TextAlign.center,
             style: BaseTypography.button,
           ),
         ),

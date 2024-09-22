@@ -1,6 +1,6 @@
-import '../mapalus_flutter_commons.dart';
 import 'dart:developer' as dev;
 
+import '../mapalus_flutter_commons.dart';
 
 class NotificationService {
   static NotificationService? _instance;
@@ -69,18 +69,18 @@ class NotificationService {
       "data": {
         "url": "https://www.mapalusindonesia.com",
         // "click_action": "com.sample.test.OPEN_ACTIVITY",
-        "icon" : "ic_launcher"
+        "icon": "ic_launcher"
       }
     };
 
     try {
-      Dio dio = Dio();
-      var response = await dio.post(
-        baseUrl,
-        data: body,
-        options: Options(headers: headers),
-      );
-      dev.log("[NOTIFICATION SERVICE] sent notification request $response SUCCESS");
+      // Dio dio = Dio();
+      // var response = await dio.post(
+      //   baseUrl,
+      //   data: body,
+      //   options: Options(headers: headers),
+      // );
+      // dev.log("[NOTIFICATION SERVICE] sent notification request $response SUCCESS");
     } catch (e) {
       dev.log("[NOTIFICATION SERVICE] sent notification request FAILED");
       dev.log(e.toString());

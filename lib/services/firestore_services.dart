@@ -458,4 +458,17 @@ class FirestoreService {
 
     return res;
   }
+
+  Future<List<String>> getProductCategories() async {
+    final apps = fireStore.collection(_keyCollectionApp);
+    final DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
+        () => apps.doc("categories").get(), 'getProductCategories');
+
+    final res = doc?.data();
+    if (res == null) {
+      return [];
+    }
+    final List<dynamic>data = res['data'];
+    return data.map((e) => e.toString()).toList();
+  }
 }

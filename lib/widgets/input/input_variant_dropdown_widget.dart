@@ -81,7 +81,9 @@ class _InputVariantDropdownWidgetState
                 children: [
                   Expanded(
                     child: Text(
-                      currentValue.isEmpty ? widget.hint : currentValue,
+                      currentValue.isEmpty
+                          ? widget.hint.capitalizeByWord
+                          : currentValue.capitalizeByWord,
                       style: BaseTypography.bodyMedium,
                     ),
                   ),

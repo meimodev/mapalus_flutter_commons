@@ -102,7 +102,6 @@ import 'package:mapalus_flutter_commons/shared/shared.dart';
 // }
 
 part 'product.freezed.dart';
-
 part 'product.g.dart';
 
 @freezed
@@ -119,15 +118,12 @@ class Product with _$Product {
     @Default("") String name,
     @Default("") String partnerId,
     @Default(0) double price,
-    @Default(ProductStatus.available) ProductStatus status,
-    @Default(ProductType.food) ProductType type,
-    @Default(ProductUnit.serve) ProductUnit unit,
+    ProductStatus? status,
+    ProductType? type,
+    ProductUnit? unit,
     @Default(0) double weight,
   }) = _Product;
 
   factory Product.fromJson(Map<String, Object?> json) =>
       _$ProductFromJson(json);
-
-
-
 }

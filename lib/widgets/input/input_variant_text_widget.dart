@@ -12,7 +12,9 @@ class InputVariantTextWidget extends StatelessWidget {
       this.textInputType,
       this.borderColor,
       this.startIcon,
-      this.backgroundColor});
+      this.backgroundColor,
+        this.currentInputValue,
+      });
 
   final TextEditingController? controller;
   final void Function(String value)? onChanged;
@@ -23,6 +25,7 @@ class InputVariantTextWidget extends StatelessWidget {
   final TextInputType? textInputType;
   final Color? borderColor;
   final Color? backgroundColor;
+  final String? currentInputValue;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,7 @@ class InputVariantTextWidget extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       maxLines: maxLines,
+      initialValue: currentInputValue,
       keyboardType: textInputType,
       decoration: InputDecoration(
         hintText: hint,

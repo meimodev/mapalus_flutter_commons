@@ -22,8 +22,18 @@ enum ProductStatus {
   unavailable
 }
 
+
 extension XProductStatus on ProductStatus {
   bool get available => this == ProductStatus.available;
+
+  String get translate {
+    switch (this){
+      case ProductStatus.available:
+        return "Tersedia";
+      case ProductStatus.unavailable:
+        return "Tidak Tersedia";
+    }
+  }
 }
 
 enum ProductType {

@@ -1,7 +1,10 @@
 export 'button_widget.dart';
 export 'card_order.dart';
+export 'checkbox_widget.dart';
 export 'chip_category.dart';
 export 'custom_image.dart';
-export 'input/input_widget.dart';
+export 'dialog/dialog.dart';
+export 'image_picker_widget.dart';
+export 'input/input.dart';
 export 'loading_wrapper.dart';
 export 'screen_wrapper.dart';

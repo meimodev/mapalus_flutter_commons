@@ -1,14 +1,23 @@
 import '../values.dart';
 
 extension StringExtension on String {
-  String capitalizeByWord() {
-    if (trim().isEmpty) {
+  String get capitalizeByWord {
+    if (isEmpty) {
+      return "";
+    }
+    final trimmed = trim();
+    if (trimmed.isEmpty) {
       return '';
     }
-    return split(' ')
-        .map((element) =>
-            "${element[0].toUpperCase()}${element.substring(1).toLowerCase()}")
-        .join(" ");
+    if (trimmed.contains(' ')) {
+      return trimmed
+          .split(' ')
+          .map((element) =>
+              "${element[0].toUpperCase()}${element.substring(1).toLowerCase()}")
+          .join(" ");
+    }
+
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 
   String phoneCleanUseZero() {

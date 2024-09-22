@@ -173,7 +173,7 @@ class UserRepo extends UserRepoContract {
 
   @override
   Future<UserApp> registerUser(String phone, String name) async {
-    UserApp user = UserApp(phone: phone, name: name.capitalizeByWord(), uid: '', id: '', lastActiveTimeStamp: DateTime.now());
+    UserApp user = UserApp(phone: phone, name: name.capitalizeByWord, uid: '', id: '', lastActiveTimeStamp: DateTime.now());
     await fireStore.createUser(phone, user.toJson());
     signing(user);
     return Future.value(user);

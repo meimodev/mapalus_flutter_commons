@@ -36,7 +36,7 @@ class InputWidget extends StatefulWidget {
     super.key,
     required this.label,
     required this.hint,
-    required this.onChanged,
+    this.onChanged,
     required this.onPressedWithResult,
     this.currentInputValue,
     this.options,
@@ -61,6 +61,7 @@ class InputWidget extends StatefulWidget {
     this.errorText,
     this.autoValidateMode = AutovalidateMode.always,
     this.validators,
+    this.backgroundColor,
   })  : variant = InputWidgetVariant.binaryOption,
         endIcon = null,
         startIcon = null,
@@ -69,7 +70,6 @@ class InputWidget extends StatefulWidget {
         controller = null,
         onPressedWithResult = null,
         borderColor = null,
-        backgroundColor = null,
         textInputType = null,
         assert(options != null && options.length > 0,
             "options cannot be null or empty");
@@ -136,6 +136,15 @@ class _InputWidgetState extends State<InputWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String? currentInputValue = widget.currentInputValue;
+    if (widget.textInputType == TextInputType.number) {
+      if (widget.currentInputValue != null) {
+        if (widget.currentInputValue!.startsWith("0")) {
+          currentInputValue = null;
+        }
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -146,6 +155,7 @@ class _InputWidgetState extends State<InputWidget> {
                 currentInputValue: widget.currentInputValue,
                 onChanged: onChanged,
                 borderColor: borderColor,
+                backgroundColor: widget.backgroundColor,
               )
             : const SizedBox(),
         widget.variant == InputWidgetVariant.dropdown
@@ -170,6 +180,7 @@ class _InputWidgetState extends State<InputWidget> {
                 textInputType: widget.textInputType,
                 borderColor: borderColor,
                 backgroundColor: widget.backgroundColor,
+                currentInputValue: currentInputValue,
                 // autoValidateMode: widget.autoValidateMode,
                 // validators: widget.validators,
               )
