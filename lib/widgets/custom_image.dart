@@ -38,6 +38,7 @@ class CustomImage extends StatelessWidget {
         CachedNetworkImage(
           imageUrl: imageUrl,
           fadeInDuration: const Duration(milliseconds: 400),
+          fit: BoxFit.cover,
           placeholder: (context, _) => Container(
             color: Colors.transparent,
           ),

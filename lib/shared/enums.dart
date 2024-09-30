@@ -22,12 +22,11 @@ enum ProductStatus {
   unavailable
 }
 
-
 extension XProductStatus on ProductStatus {
   bool get available => this == ProductStatus.available;
 
   String get translate {
-    switch (this){
+    switch (this) {
       case ProductStatus.available:
         return "Tersedia";
       case ProductStatus.unavailable:
@@ -45,11 +44,35 @@ enum ProductType {
   laundry
 }
 
+extension XProductType on ProductType {
+  String get translate {
+    switch (this) {
+      case ProductType.food:
+        return "Makanan";
+      case ProductType.grocery:
+        return "Bahan Makanan";
+      case ProductType.laundry:
+        return "Laundri";
+    }
+  }
+}
+
 enum ProductUnit {
   @JsonValue("SERVE")
   serve,
   @JsonValue("KILOGRAM")
   kilogram,
+}
+
+extension XProductUnit on ProductUnit {
+  String get translate {
+    switch (this) {
+      case ProductUnit.serve:
+        return "Porsi";
+      case ProductUnit.kilogram:
+        return "Kilogram";
+    }
+  }
 }
 
 enum PaymentMethod {

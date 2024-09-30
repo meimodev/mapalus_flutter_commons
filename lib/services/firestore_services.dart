@@ -237,11 +237,11 @@ class FirestoreService {
     return data;
   }
 
-  Future<Object?> createProduct(Map<String, dynamic> data) async {
+  Future<Object?> createProduct(Map<String, dynamic> data, String id) async {
     final products = fireStore.collection(_keyCollectionProducts);
 
     await firestoreLogger(
-      () async => await products.add(data),
+      () async => await products.doc(id).set(data),
       'createProduct',
     );
 
@@ -256,11 +256,6 @@ class FirestoreService {
       'deleteProduct',
     );
 
-    final app = fireStore.collection(_keyCollectionApp);
-    await firestoreLogger(
-      () => app.doc('product').set({'count': FieldValue.increment(-1)}),
-      'decrement product count',
-    );
     return true;
   }
 
@@ -468,7 +463,7 @@ class FirestoreService {
     if (res == null) {
       return [];
     }
-    final List<dynamic>data = res['data'];
+    final List<dynamic> data = res['data'];
     return data.map((e) => e.toString()).toList();
   }
 }

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import '../mapalus_flutter_commons.dart';
 
 class ProductRepo {
   FirestoreService firestore = FirestoreService();
+  OnlineStorageService onlineStorage = OnlineStorageService.instance;
 
   /// currently using on device search, change later to backend search
   Future<List<Product>> searchProduct(
@@ -47,7 +50,7 @@ class ProductRepo {
   }
 
   Future<Product> createProduct(Product product) async {
-    final res = await firestore.createProduct(product.toJson());
+    final res = await firestore.createProduct(product.toJson(), product.id);
     final data = Product.fromJson(res as Map<String, dynamic>);
     return data;
   }
@@ -59,5 +62,9 @@ class ProductRepo {
   Future<List<String>> getCategories() async {
     final result = await firestore.getProductCategories();
     return result;
+  }
+
+  Future<String?> uploadProductImage(File image, String productId) async {
+    return await onlineStorage.uploadImage(image, "products", productId);
   }
 }

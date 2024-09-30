@@ -30,7 +30,10 @@ Future<T?> showDialogCustomWidget<T>({
           Row(
             children: [
               Expanded(
-                child: Text(title),
+                child: Text(
+                  title,
+                  style: BaseTypography.bodyMedium,
+                ),
               ),
               IconButton(
                 onPressed: () {
