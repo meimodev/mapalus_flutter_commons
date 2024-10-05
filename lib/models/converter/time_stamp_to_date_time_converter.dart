@@ -6,6 +6,16 @@ class TimestampToDateTimeConverter implements JsonConverter<DateTime, dynamic> {
 
   @override
   DateTime fromJson(dynamic timestamp) {
+    if (timestamp is Timestamp) {
+      return timestamp.toDate();
+    }
+
+    if (timestamp is Map) {
+      return Timestamp(
+        timestamp["seconds"],
+        timestamp["nanoseconds"],
+      ).toDate();
+    }
     return (timestamp as Timestamp).toDate();
   }
 

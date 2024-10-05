@@ -23,7 +23,7 @@ enum ProductStatus {
 }
 
 extension XProductStatus on ProductStatus {
-  bool get available => this == ProductStatus.available;
+  bool get isAvailable => this == ProductStatus.available;
 
   String get translate {
     switch (this) {
@@ -111,4 +111,30 @@ enum StreamDataWrapperOperation {
   read,
   update,
   delete,
+}
+
+enum DeliveryTimeName {
+  @JsonValue("NOW")
+  now,
+  @JsonValue("MORNING")
+  morning,
+  @JsonValue("NOON")
+  noon,
+  @JsonValue("AFTERNOON")
+  afternoon,
+}
+
+extension XDeliveryTimeName on DeliveryTimeName {
+  String get translate {
+    switch (this) {
+      case DeliveryTimeName.now:
+        return "Sekarang";
+      case DeliveryTimeName.morning:
+        return "Pagi";
+      case DeliveryTimeName.noon:
+        return "Siang";
+      case DeliveryTimeName.afternoon:
+        return "Sore";
+    }
+  }
 }

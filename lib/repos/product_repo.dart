@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import '../mapalus_flutter_commons.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
+import 'package:mapalus_flutter_commons/services/services.dart';
 
 class ProductRepo {
   FirestoreService firestore = FirestoreService();

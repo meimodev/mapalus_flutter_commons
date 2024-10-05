@@ -20,11 +20,11 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 
-  String phoneCleanUseZero() {
+  String get phoneCleanUseZero {
     return contains('+62') ? replaceFirst('+62', '0') : this;
   }
 
-  String phoneCleanUseCountryCode() {
+  String get phoneCleanUseCountryCode {
     return substring(0, 1) == "0" ? replaceFirst("0", "+62") : this;
   }
 

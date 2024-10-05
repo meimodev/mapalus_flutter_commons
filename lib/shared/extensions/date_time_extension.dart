@@ -1,3 +1,4 @@
+// ignore: non_constant_identifier_names
 import 'package:jiffy/jiffy.dart';
 
 extension XDateTime on DateTime {
@@ -43,21 +44,23 @@ extension XDateTime on DateTime {
   }
 
   // ignore: non_constant_identifier_names
+  /// Senin, 24 Januari 2024
   String get EEEEddMMMyyyy {
     return toStringFormatted('EEEE, dd MMMM yyyy');
   }
 
   // ignore: non_constant_identifier_names
+  /// Sen, 24 Jan 2024
   String get EddMMMyyyy {
     return toStringFormatted('E, dd MMMM yyyy');
   }
 
-  // ignore: non_constant_identifier_names
+  /// Senin, 24 Januari
   String get EEEEddMMM {
     return toStringFormatted('EEEE, dd MMMM');
   }
 
-  // ignore: non_constant_identifier_names
+  /// S, 24 Jan 14:31
   String get EddMMMHHmm {
     return toStringFormatted('E, dd MMM HH:mm');
   }
@@ -113,6 +116,7 @@ extension XDateTime on DateTime {
   //
 
   // ignore: non_constant_identifier_names
+  /// 15:33
   String get HHmm {
     return toStringFormatted('HH:mm');
   }

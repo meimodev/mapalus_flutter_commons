@@ -1,6 +1,8 @@
 import 'dart:developer' as dev;
 
-import '../mapalus_flutter_commons.dart';
+import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
+import 'package:mapalus_flutter_commons/shared/shared.dart';
 
 class FirestoreService {
   FirebaseFirestore fireStore;
@@ -35,7 +37,7 @@ class FirestoreService {
   Future<Object?> getUser(String phone) async {
     final col = fireStore.collection(_keyCollectionUsers);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col.doc(phone.phoneCleanUseZero()).get,
+      col.doc(phone.phoneCleanUseZero).get,
       'getUser',
     );
     return doc?.data();
@@ -44,7 +46,7 @@ class FirestoreService {
   Future<bool> checkPhoneRegistration(String phone) async {
     final col = fireStore.collection(_keyCollectionUsers);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col.doc(phone.phoneCleanUseZero()).get,
+      col.doc(phone.phoneCleanUseZero).get,
       'checkPhoneRegistration',
     );
     return doc?.exists ?? false;
@@ -54,7 +56,7 @@ class FirestoreService {
     final users = fireStore.collection(_keyCollectionUsers);
 
     await firestoreLogger(
-      () => users.doc(phone.phoneCleanUseZero()).set(data),
+      () => users.doc(phone.phoneCleanUseZero).set(data),
       'createUser',
     );
 
@@ -74,9 +76,8 @@ class FirestoreService {
 
   Future<bool> createOrUpdateOrder(PostOrderRequest req) async {
     CollectionReference orders = fireStore.collection(_keyCollectionOrders);
-    final order = req.order;
     await firestoreLogger(
-      () => orders.doc(order.id).set(order.toJson()),
+      () => orders.doc(req.order.id).set(req.order.toJson()),
       'createOrUpdateOrder $req',
     );
     return true;
@@ -96,8 +97,7 @@ class FirestoreService {
     final col = fireStore.collection(_keyCollectionOrders);
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
       col
-          .where('ordering_user.phone',
-              isEqualTo: userPhone.phoneCleanUseZero())
+          .where('ordering_user.phone', isEqualTo: userPhone.phoneCleanUseZero)
           .get,
       'readUserOrders',
     );
@@ -197,12 +197,24 @@ class FirestoreService {
       );
     }
 
-    if (req.partner != null) {
-      col.where('partner.id', isEqualTo: req.partner!.id);
+    if (req.partnerId != null) {
+      col.where('partner.id', isEqualTo: req.partnerId);
     }
 
     if (req.productIds.isNotEmpty) {
       col.where('id', whereIn: req.productIds);
+    }
+
+    if (req.dateRange != null) {
+      col
+          .where(
+            'created_at',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(req.dateRange!.start),
+          )
+          .where(
+            'created_at',
+            isLessThanOrEqualTo: Timestamp.fromDate(req.dateRange!.end),
+          );
     }
 
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
@@ -218,10 +230,10 @@ class FirestoreService {
     return res;
   }
 
-  Stream<QuerySnapshot<Object?>> getOrdersStream() {
-    final orders = fireStore.collection(_keyCollectionOrders);
-    return orders.snapshots();
-  }
+  // Stream<QuerySnapshot<Object?>> getOrdersStream() {
+  //   final orders = fireStore.collection(_keyCollectionOrders);
+  //   return orders.snapshots();
+  // }
 
   Stream<DocumentSnapshot<Object?>> getOrderStream(String orderId) {
     final orders = fireStore.collection(_keyCollectionOrders);
@@ -359,7 +371,7 @@ class FirestoreService {
   ) async {
     final users = fireStore.collection(_keyCollectionUsers);
     await firestoreLogger(
-      () => users.doc(phone.phoneCleanUseZero()).set(
+      () => users.doc(phone.phoneCleanUseZero).set(
         {"fcm_token": token},
         SetOptions(merge: true),
       ),
@@ -370,7 +382,7 @@ class FirestoreService {
   Future<void> updateLastActiveTimeStamp(String phone) async {
     final users = fireStore.collection(_keyCollectionUsers);
     await firestoreLogger(
-      () => users.doc(phone.phoneCleanUseZero()).set(
+      () => users.doc(phone.phoneCleanUseZero).set(
         {"last_active_time_stamp": FieldValue.serverTimestamp()},
         SetOptions(merge: true),
       ),
@@ -452,6 +464,52 @@ class FirestoreService {
         );
 
     return res;
+  }
+
+  Stream<List<Map<String, dynamic>>> exposeOrders(GetOrdersRequest req) {
+    final orders = fireStore.collection(_keyCollectionOrders);
+
+    if (req.partnerId != null) {
+      orders.where("partner_id", isEqualTo: req.partnerId);
+    }
+
+    if (req.dateRange != null) {
+      orders
+          .where(
+            'created_at',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(req.dateRange!.start),
+          )
+          .where(
+            'created_at',
+            isLessThanOrEqualTo: Timestamp.fromDate(req.dateRange!.end),
+          );
+    }
+
+    firestoreLogger(
+      () {},
+      'exposeOrders $req',
+    );
+
+    final res = orders.snapshots().map(
+          (event) => event.docs
+              .map(
+                (element) => element.data(),
+              )
+              .toList(),
+        );
+
+    return res;
+  }
+
+  Stream<Map<String, dynamic>> exposeOrderDetails(String orderId) {
+    final orders = fireStore.collection(_keyCollectionOrders);
+    final order = orders.doc(orderId);
+
+    firestoreLogger(
+      () {},
+      'exposeOrderDetails $orderId',
+    );
+    return order.snapshots().map((event) => event.data() ?? {});
   }
 
   Future<List<String>> getProductCategories() async {

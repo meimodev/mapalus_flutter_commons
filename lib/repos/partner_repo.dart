@@ -1,4 +1,5 @@
-import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
+import 'package:mapalus_flutter_commons/services/services.dart';
 
 class PartnerRepo {
   FirestoreService firestore = FirestoreService();
@@ -31,10 +32,10 @@ class PartnerRepo {
     return UsersInfo.fromMap(res);
   }
 
-  Future<List<Partner>> readPartnersForHome()async{
+  Future<List<Partner>> readPartnersForHome() async {
     final result = await firestore.getPartners(const GetPartnerRequest());
-    return result.map((e) => Partner.fromJson(e as Map<String, dynamic>)).toList();
-
+    return result
+        .map((e) => Partner.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
-
 }

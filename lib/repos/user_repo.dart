@@ -1,6 +1,9 @@
-import '../mapalus_flutter_commons.dart';
 import 'dart:developer' as dev;
-import 'dart:io' show Platform;
+
+import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
+import 'package:mapalus_flutter_commons/services/services.dart';
+import 'package:mapalus_flutter_commons/shared/shared.dart';
 
 abstract class UserRepoContract {
   Future<UserApp?> readSignedInUser();
@@ -101,7 +104,12 @@ class UserRepo extends UserRepoContract {
     String? name = box.get('name');
     String? phone = box.get('phone');
     if (name != null && phone != null) {
-      signedUser = UserApp(uid:"",id:"",phone: phone, name: name, lastActiveTimeStamp: DateTime.now());
+      signedUser = UserApp(
+          uid: "",
+          id: "",
+          phone: phone,
+          name: name,
+          lastActiveTimeStamp: DateTime.now());
     }
   }
 
@@ -173,7 +181,12 @@ class UserRepo extends UserRepoContract {
 
   @override
   Future<UserApp> registerUser(String phone, String name) async {
-    UserApp user = UserApp(phone: phone, name: name.capitalizeByWord, uid: '', id: '', lastActiveTimeStamp: DateTime.now());
+    UserApp user = UserApp(
+        phone: phone,
+        name: name.capitalizeByWord,
+        uid: '',
+        id: '',
+        lastActiveTimeStamp: DateTime.now());
     await fireStore.createUser(phone, user.toJson());
     signing(user);
     return Future.value(user);

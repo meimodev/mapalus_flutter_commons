@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapalus_flutter_commons/models/converter/converter.dart';
+import 'package:mapalus_flutter_commons/shared/enums.dart';
 
 part 'delivery_time.freezed.dart';
-
 part 'delivery_time.g.dart';
 
 @freezed
@@ -13,6 +13,7 @@ class DeliveryTime with _$DeliveryTime {
     required String id,
     required bool available,
     required double discount,
+    required DeliveryTimeName name,
     @StringHourToDateTimeConverter() required DateTime start,
     @StringHourToDateTimeConverter() required DateTime end,
   }) = _DeliveryTime;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../theme/theme.dart';
 
 extension XTextStyle on TextStyle {
@@ -8,6 +9,8 @@ extension XTextStyle on TextStyle {
   TextStyle get toBlack => copyWith(color: BaseColor.black);
   TextStyle get toWhite => copyWith(color: BaseColor.white);
   TextStyle get toPrimary => copyWith(color: BaseColor.primary3);
+  TextStyle get toNegative => copyWith(color: BaseColor.negative);
+  TextStyle get toPositive => copyWith(color: BaseColor.positive);
   TextStyle get toSecondary => copyWith(color: BaseColor.secondaryText);
   TextStyle get toError => copyWith(color: BaseColor.error);
   TextStyle get toInfo => copyWith(color: BaseColor.info);
@@ -72,7 +75,6 @@ extension XTextStyle on TextStyle {
   TextStyle get toCardBackground1 => copyWith(color: BaseColor.cardBackground1);
   TextStyle get toCardBackground2 => copyWith(color: BaseColor.cardBackground2);
 
-
   /// [INFO]
   /// Extension for change font size
   ///
@@ -103,7 +105,6 @@ extension XTextStyle on TextStyle {
   TextStyle get w900 => copyWith(fontWeight: FontWeight.w900);
   TextStyle get toBold => copyWith(fontWeight: FontWeight.w700);
   TextStyle get toRegular => copyWith(fontWeight: FontWeight.w400);
-
 
   /// [INFO]
   /// Extension for change font style and decoration

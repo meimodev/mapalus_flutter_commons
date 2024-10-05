@@ -1,8 +1,7 @@
-library mapalus_flutter_commons;
-
 export 'package:cached_network_image/cached_network_image.dart';
+//FIREBASE libraries
 export 'package:cloud_firestore/cloud_firestore.dart';
-export 'package:device_info_plus/device_info_plus.dart';
+// export 'package:device_info_plus/device_info_plus.dart';
 export 'package:firebase_app_check/firebase_app_check.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -31,8 +30,8 @@ export 'package:transparent_image/transparent_image.dart';
 export 'package:url_launcher/url_launcher.dart';
 export 'package:url_launcher/url_launcher_string.dart';
 
-export 'models/models.dart';
-export 'repos/repos.dart';
-export 'services/services.dart';
-export 'shared/shared.dart';
-export 'widgets/widgets.dart';
+// export 'models/models.dart';
+// export 'repos/repos.dart';
+// export 'services/services.dart';
+// export 'shared/shared.dart';
+// export 'widgets/widgets.dart';

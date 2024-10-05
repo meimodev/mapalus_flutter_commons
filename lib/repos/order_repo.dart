@@ -10,9 +10,13 @@ abstract class OrderRepo {
 
   Future<List<OrderApp>> readOrders(GetOrdersRequest req);
 
-  Future<OrderApp> updateOrder(UpdateOrderRequest req);
+  Future<bool> updateOrder(UpdateOrderRequest req);
 
   Stream<List<ProductOrder>?> exposeLocalProductOrders();
+
+  Stream<List<OrderApp>> readOrdersStream(GetOrdersRequest req);
+
+  Stream<OrderApp> readOrderDetailStream(String orderId);
 
   Future<List<ProductOrder>> readLocalProductOrders();
 
@@ -57,9 +61,26 @@ class OrderRepoImpl extends OrderRepo {
   }
 
   @override
-  Future<OrderApp> updateOrder(UpdateOrderRequest req) {
-    // TODO: implement updateOrder
-    throw UnimplementedError();
+  Stream<List<OrderApp>> readOrdersStream(GetOrdersRequest req) {
+    final orders = api.exposeOrders(req);
+    return orders.map(
+      (event) => event.map(OrderApp.fromJson).toList(),
+    );
+  }
+
+  @override
+  Stream<OrderApp> readOrderDetailStream(String orderId) {
+    final order = api.exposeOrderDetails(orderId);
+    return order.map(OrderApp.fromJson);
+  }
+
+  @override
+  Future<bool> updateOrder(UpdateOrderRequest req) async {
+    return await api.createOrUpdateOrder(
+      PostOrderRequest(
+        order: req.orderApp,
+      ),
+    );
   }
 
   @override

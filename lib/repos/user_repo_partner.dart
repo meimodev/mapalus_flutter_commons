@@ -1,4 +1,5 @@
 import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
 
 abstract class UserRepoPartnerContract {
   Future<bool> signIn({required String phone, required String password});
@@ -42,11 +43,15 @@ class UserRepoPartner extends UserRepoPartnerContract {
 
   @override
   Future<UserApp?> getSignedIn() async {
-    final isSigned =
-        _signingBox!.get(_isSignedInKey, defaultValue: false) ;
+    final isSigned = _signingBox!.get(_isSignedInKey, defaultValue: false);
 
     if (isSigned!) {
-      return UserApp(phone: '089525699078', name: 'Pasar', uid: '', id: '', lastActiveTimeStamp: DateTime.now());
+      return UserApp(
+          phone: '089525699078',
+          name: 'Pasar',
+          uid: '',
+          id: '',
+          lastActiveTimeStamp: DateTime.now());
     }
     return null;
   }

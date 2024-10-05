@@ -1,5 +1,8 @@
-import '../mapalus_flutter_commons.dart';
 import 'dart:developer' as dev;
+
+import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
+import 'package:mapalus_flutter_commons/models/models.dart';
+import 'package:mapalus_flutter_commons/services/services.dart';
 
 class AppRepoContract {}
 
@@ -37,7 +40,7 @@ class AppRepo extends AppRepoContract {
 
   Future<DeliveryModifiers> getDeliveryModifiers() async {
     final data = await firestoreService.getDeliveryModifiers();
-    return DeliveryModifiers.fromJson( data as Map<String, dynamic>);
+    return DeliveryModifiers.fromJson(data as Map<String, dynamic>);
   }
 
   Future<Announcement?> getAppAnnouncement() async {
