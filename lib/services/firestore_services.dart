@@ -276,7 +276,7 @@ class FirestoreService {
 
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
       col.doc(partnerId).get,
-      'getPartner',
+      'getPartner $partnerId',
     );
 
     return doc?.data();
@@ -418,6 +418,17 @@ class FirestoreService {
     );
 
     return users?.docs.map((e) => e.data()).toList() ?? [];
+  }
+
+  Future<Object?> updatePartner(UpdatePartnerRequest req) async {
+    final partners = fireStore.collection(_keyCollectionPartners);
+
+    await firestoreLogger(
+      () => partners.doc(req.partner.id).set(req.partner.toJson()),
+      'updatePartner UpdatePartnerRequest= $req',
+    );
+
+    return req.partner.toJson();
   }
 
   Future<List<Object?>> getProducts(GetProductRequest req) async {

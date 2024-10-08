@@ -15,7 +15,7 @@ export 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:flutter_svg/flutter_svg.dart';
 export 'package:geolocator/geolocator.dart';
-export 'package:google_maps_flutter/google_maps_flutter.dart';
+// export 'package:google_maps_flutter/google_maps_flutter.dart';
 // export 'package:badges/badges.dart';
 // export 'package:carousel_slider/carousel_slider.dart';
 export 'package:hive/hive.dart';

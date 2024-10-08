@@ -1,21 +1,13 @@
 import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
 import 'package:mapalus_flutter_commons/models/models.dart';
 
-abstract class UserRepoPartnerContract {
-  Future<bool> signIn({required String phone, required String password});
-
-  Future<UserApp?> getSignedIn();
-
-  Future<bool> signOut();
-}
-
-class UserRepoPartner extends UserRepoPartnerContract {
+class UserPartnerRepo {
   Box<bool>? _signingBox;
 
   final _isSignedInKey = 'isSignedIn';
   final _boxSigningKey = 'signing';
 
-  UserRepoPartner() {
+  UserPartnerRepo() {
     _init();
   }
 
@@ -23,7 +15,6 @@ class UserRepoPartner extends UserRepoPartnerContract {
     _signingBox = await Hive.openBox(_boxSigningKey);
   }
 
-  @override
   Future<bool> signIn({
     required String phone,
     required String password,
@@ -35,13 +26,11 @@ class UserRepoPartner extends UserRepoPartnerContract {
     return false;
   }
 
-  @override
   Future<bool> signOut() async {
     await _signingBox!.clear();
     return true;
   }
 
-  @override
   Future<UserApp?> getSignedIn() async {
     final isSigned = _signingBox!.get(_isSignedInKey, defaultValue: false);
 

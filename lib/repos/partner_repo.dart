@@ -1,13 +1,26 @@
+import 'dart:io';
+
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
 
 class PartnerRepo {
   FirestoreService firestore = FirestoreService();
+  OnlineStorageService storage = OnlineStorageService();
 
   Future<Partner> readPartner(String partnerId) async {
     final res = await firestore.readPartner(partnerId);
     final data = res as Map<String, dynamic>;
     return Partner.fromJson(data);
+  }
+
+  Future<Partner> updatePartner(UpdatePartnerRequest req) async {
+    final res = await firestore.updatePartner(req);
+    final data = res as Map<String, dynamic>;
+    return Partner.fromJson(data);
+  }
+
+  Future<String?> uploadImage(File image, String partnerId) async {
+    return await storage.uploadImage(image, "partners", partnerId);
   }
 
   Future<DeliveryModifiers> getDeliveryModifiers() async {
