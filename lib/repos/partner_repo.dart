@@ -1,3 +1,4 @@
+import 'dart:developer' show log;
 import 'dart:io';
 
 import 'package:mapalus_flutter_commons/models/models.dart';
@@ -7,10 +8,30 @@ class PartnerRepo {
   FirestoreService firestore = FirestoreService();
   OnlineStorageService storage = OnlineStorageService();
 
-  Future<Partner> readPartner(String partnerId) async {
-    final res = await firestore.readPartner(partnerId);
-    final data = res as Map<String, dynamic>;
-    return Partner.fromJson(data);
+  Partner? _partner;
+
+  Future<Partner?> getCurrentPartner() async {
+    if (_partner == null) {
+      log("[PARTNER REPO] Partner not logged in, call setCurrentPartnerFirst()");
+    }
+    return _partner!;
+  }
+
+  Future<void> setCurrentPartner(String partnerId) async {
+    final partner = await getPartners(
+      GetPartnerRequest(
+        partnerId: partnerId,
+      ),
+    );
+    _partner = partner;
+  }
+
+  Future<Partner?> getPartners(GetPartnerRequest req) async {
+    final res = await firestore.getPartners(req);
+    if (res.isEmpty) {
+      return null;
+    }
+    return Partner.fromJson(res.first as Map<String, dynamic>);
   }
 
   Future<Partner> updatePartner(UpdatePartnerRequest req) async {

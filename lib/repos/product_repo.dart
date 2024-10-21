@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductRepo {
   FirestoreService firestore = FirestoreService();
@@ -45,13 +46,16 @@ class ProductRepo {
   }
 
   Future<Product> updateProduct(Product product) async {
-    final res = await firestore.updateProduct(product.id, product.toJson());
+    final res =
+        await firestore.createOrUpdateProduct(product.toJson(), product.id);
     final data = Product.fromJson(res as Map<String, dynamic>);
     return data;
   }
 
   Future<Product> createProduct(Product product) async {
-    final res = await firestore.createProduct(product.toJson(), product.id);
+    final alteredProduct = product.copyWith(id: Uuid().v4());
+    final res = await firestore.createOrUpdateProduct(
+        alteredProduct.toJson(), alteredProduct.id);
     final data = Product.fromJson(res as Map<String, dynamic>);
     return data;
   }

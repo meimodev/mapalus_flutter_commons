@@ -1,291 +1,286 @@
-import 'dart:developer' as dev;
+import 'dart:developer' show log;
 
 import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
 import 'package:mapalus_flutter_commons/shared/shared.dart';
+import 'package:uuid/uuid.dart';
+
+import 'app_repo.dart';
 
 abstract class UserRepoContract {
-  Future<UserApp?> readSignedInUser();
-
-  Future<bool> checkIfRegistered(String phone);
-
-  Future<UserApp> registerUser(String phone, String name);
-
-  void requestOTP(String phone, Function(Result) onResult);
-
-  Future<bool> deleteUser(String phone);
+  // Future<UserApp?> readSignedInUser();
+  //
+  // Future<bool> checkIfRegistered(String phone);
+  //
+  // Future<UserApp> registerUser(String phone, String name);
+  //
+  // void requestOTP(String phone, Function(Result) onResult);
+  //
+  // Future<bool> deleteUser(String phone);
 }
 
 class UserRepo extends UserRepoContract {
-  UserApp? signedUser;
-  int? resendToken;
-  String? verificationId;
-  FirestoreService fireStore = FirestoreService();
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final _fireStore = FirestoreService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Function(UserApp userApp)? onSuccessSigning;
-  Function(UserApp userApp)? onSignedUser;
-  Function(String phone)? onUnregisteredUser;
+  final AppRepo _appRepo;
+  final LocalStorageService _localStorageService;
+
+  UserApp? _signedUser;
+  int? _resendToken;
+  String? _verificationId;
+
+  void Function(UserApp value)? onSuccessSigning;
+  void Function(String value)? onUnregisteredUser;
   void Function()? onSigningOut;
 
-  bool shouldCallIdChange = false;
+  User? _firebaseUser;
 
-  // bool authStatusCalled = false;
-  User? user;
+  final _debounce = Debounce(Duration(milliseconds: 500));
 
-  UserRepo() {
-    // auth.authStateChanges().listen((User? user) async {
-    //   this.user = user;
-    //   if (user != null) {
-    //     dev.log('AuthStateChanges(), Phone number confirmed');
-    //
-    //     // authStatusCalled = true;
-    //     final result = await fireStore.getUser(user.phoneNumber!);
-    //     UserApp? userApp = result == null
-    //         ? null
-    //         : UserApp.fromJson(result as Map<String, dynamic>);
-    //
-    //     if (userApp != null) {
-    //       dev.log('AuthStateChanges() signed success $signedUser');
-    //       signing(userApp);
-    //     } else {
-    //       // user is not registered
-    //       if (onUnregisteredUser != null) {
-    //         onUnregisteredUser!(user.phoneNumber!);
-    //       }
-    //       signedUser = null;
-    //       shouldCallIdChange = true;
-    //       dev.log(
-    //           'AuthStateChanges() Phone is not registered ${user.phoneNumber!}');
-    //     }
-    //   } else {
-    //     dev.log('AuthStateChanges() user = null');
-    //
-    //     signedUser = null;
-    //   }
-    // });
-    // auth.idTokenChanges().listen((user) async {
-    //   //just called this listener when the auth status is never called
-    //   if (!shouldCallIdChange) {
-    //     return;
-    //   }
-    //   if (user != null) {
-    //     dev.log('idTokenChanges(), Phone number confirmed');
-    //     if (signedUser != null) {
-    //       dev.log('idTokenChanges(), user already signed');
-    //       return;
-    //     }
-    //     final result = await fireStore.getUser(user.phoneNumber!);
-    //     UserApp? userApp = result == null
-    //         ? null
-    //         : UserApp.fromJson(result as Map<String, dynamic>);
-    //
-    //     if (userApp != null) {
-    //       dev.log('idTokenChanges() signed success $signedUser');
-    //       signing(userApp);
-    //     } else {
-    //       // user is not registered
-    //       if (onUnregisteredUser != null) {
-    //         onUnregisteredUser!(user.phoneNumber!);
-    //       }
-    //       signedUser = null;
-    //       dev.log(
-    //           'idTokenChanges() Phone is not registered ${user.phoneNumber!}');
-    //     }
-    //     return;
-    //   }
-    //   dev.log("idTokenChanges() Phone not confirmed");
-    // });
+  UserRepo({
+    required AppRepo appRepo,
+    required LocalStorageService localStorageService,
+  })  : _localStorageService = localStorageService,
+        _appRepo = appRepo {
+    _auth.authStateChanges().listen((user) async {
+      _onAuthStateChanges(user, "authStateChanges()");
+    });
+    _auth.idTokenChanges().listen((user) async {
+      _onAuthStateChanges(user, "idTokenChanges()");
+    });
   }
 
-  Future<void> checkPreviousSigning() async {
-    var box = await Hive.openBox('user_signing');
-    String? name = box.get('name');
-    String? phone = box.get('phone');
-    if (name != null && phone != null) {
-      signedUser = UserApp(
-          uid: "",
-          id: "",
-          phone: phone,
-          name: name,
-          lastActiveTimeStamp: DateTime.now());
-    }
+  void _onAuthStateChanges(User? user, String source) async {
+    _debounce.call(() async {
+      if (user == null) {
+        log('[USER REPO] $source user = null');
+        _signedUser = null;
+        return;
+      }
+
+      _firebaseUser = user;
+
+      log('[USER REPO] $source, Phone number confirmed ${user.phoneNumber}');
+
+      UserApp? resultUser = await getUser(
+        GetUserRequest(
+          phone: user.phoneNumber!,
+        ),
+      );
+
+      if (resultUser != null) {
+        log('[USER REPO] $source signed success $resultUser');
+        await _signing(resultUser);
+        return;
+      }
+      // user is not registered
+      if (onUnregisteredUser != null) {
+        _debounce.call(() {
+          onUnregisteredUser!(user.phoneNumber!);
+        });
+      }
+      _signedUser = null;
+      // _shouldCallIdChange = true;
+      log('[USER REPO] $source Phone is not registered ${user.phoneNumber!}');
+    });
   }
 
-  Future<void> signing(UserApp user) async {
-    signedUser = user;
+  Future<void> _signing(UserApp user) async {
+    // final updatedUser = await updateUserMetaData(user);
+    _localStorageService.saveUser(user);
+    _signedUser = user;
     if (onSuccessSigning != null) {
-      onSuccessSigning!(user);
-      onSuccessSigning = null;
+      _debounce.call(() {
+        onSuccessSigning!(user);
+        onSuccessSigning = null;
+      });
     }
-    if (onSignedUser != null) {
-      onSignedUser!(user);
+  }
+
+  Future<UserApp> updateUserMetaData(UserApp user) async {
+    final String updatedUserDeviceInfo = await _appRepo.getUserDeviceInfo();
+    final String updatedFcmToken = await _appRepo.getPushNotificationToken();
+
+    return await updateUser(
+      PostUserRequest(
+        user: user.copyWith(
+          lastActiveTimeStamp: DateTime.now(),
+          deviceInfo: updatedUserDeviceInfo,
+          fcmToken: updatedFcmToken,
+        ),
+      ),
+    );
+  }
+
+  Future<UserApp> updateUser(PostUserRequest req) async {
+    final res = await _fireStore.createOrUpdateUser(req);
+    final data = res as Map<String, dynamic>;
+    return UserApp.fromJson(data);
+  }
+
+  /// Get the current signed in User
+  Future<UserApp?> getSignedUser() async {
+    if (_signedUser != null) return _signedUser;
+
+    final localUser = _localStorageService.readUser();
+    if (localUser != null) {
+      log("[USER REPO] getCurrentUser() retrieved from localStorage");
+      return localUser;
     }
-    // FirebaseCrashlytics.instance
-    //     .setUserIdentifier("${user.phone} - ${user.name}");
-    // var box = Hive.box('user_signing');
-    // box.put('name', user.name);
-    // box.put('phone', user.phone);
 
-    await updateUserDeviceInfo();
-    await updateFcmToken(user.phone);
-    await updateLastActiveTimeStamp(user.phone);
-  }
-
-  Future<void> updateUserDeviceInfo() async {
-    if (signedUser == null) {
-      return;
+    if (_firebaseUser != null) {
+      final result = await getUser(
+        GetUserRequest(
+          phone: _firebaseUser!.phoneNumber!,
+        ),
+      );
+      if (result != null) {
+        log("[USER REPO] getCurrentUser() retrieved from remote database");
+        return result;
+      }
     }
-    // DeviceInfoPlugin dInfo = DeviceInfoPlugin();
-    // String deviceInfoString = "";
-    //
-    // if (Platform.isAndroid) {
-    //   AndroidDeviceInfo androidInfo = await dInfo.androidInfo;
-    //   deviceInfoString = '${androidInfo.manufacturer} '
-    //       '${androidInfo.model} '
-    //       'SDK:${androidInfo.version.sdkInt} '
-    //       '${androidInfo.version.codename} '
-    //       '${androidInfo.version.release}';
-    // }
-    // if (Platform.isIOS) {
-    //   IosDeviceInfo iosInfo = await dInfo.iosInfo;
-    //   deviceInfoString =
-    //       '${iosInfo.utsname.machine} ${iosInfo.model} ${iosInfo.name} ${iosInfo.utsname.version}';
-    // }
-    //
-    // await fireStore.updateUserDeviceInfo(signedUser!.id, deviceInfoString);
+    log("[USER REPO] getCurrentUser() no user signed in");
+    return null;
   }
 
-  Future<void> updateFcmToken(String phone) async {
-    // final fcmToken = await FirebaseMessaging.instance.getToken();
-    // await fireStore.updateFcmToken(phone, fcmToken);
-    // if (signedUser != null) {
-    //   signedUser =  signedUser!.copyWith(fcmToken: fcmToken!);
-    // }
+  Future<UserApp> registerUser(PostUserRequest req) async {
+    final alteredReq = req.copyWith(
+      user: req.user.copyWith(
+        documentId: Uuid().v4(),
+        lastActiveTimeStamp: DateTime.now(),
+      ),
+    );
+    await _signing(alteredReq.user);
+    final res = await _fireStore.createOrUpdateUser(alteredReq);
+    final data = res as Map<String, dynamic>;
+    return UserApp.fromJson(data);
   }
 
-  Future<void> updateLastActiveTimeStamp(String phone) async {
-    // await fireStore.updateLastActiveTimeStamp(phone);
-  }
-
-  @override
-  Future<UserApp?> readSignedInUser() {
-    return Future.value(signedUser);
-  }
-
-  @override
-  Future<bool> checkIfRegistered(String phone) async {
-    return Future.value(await fireStore.checkPhoneRegistration(phone));
-  }
-
-  @override
-  Future<UserApp> registerUser(String phone, String name) async {
-    UserApp user = UserApp(
-        phone: phone,
-        name: name.capitalizeByWord,
-        uid: '',
-        id: '',
-        lastActiveTimeStamp: DateTime.now());
-    await fireStore.createUser(phone, user.toJson());
-    signing(user);
-    return Future.value(user);
-  }
-
-  @override
-  void requestOTP(String phone, Function(Result) onResult) async {
-    phone = phone.replaceFirst("0", "+62");
+  // @override
+  Future<void> requestOTP(
+      String phone, Function(Result result) onResult) async {
     try {
-      await auth.verifyPhoneNumber(
-        phoneNumber: phone,
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phone.phoneCleanUseCountryCode,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await auth.signInWithCredential(credential);
-          dev.log("[VERIFICATION COMPLETED] CODE AUTOMATICALLY RETRIEVED");
-          onResult(Result(message: "PROCEED"));
+          await _auth.signInWithCredential(credential);
+          log('[USER REPO] requestOtp VERIFICATION AUTOMATICALLY RETRIEVED');
+          onResult(Result(message: "PROCEED", error: false));
         },
         verificationFailed: (FirebaseAuthException e) async {
-          dev.log('[VERIFICATION_FAILED] ${e.code}');
-          await FirebaseCrashlytics.instance.recordError(e, e.stackTrace,
-              reason: 'FirebaseAuthException verificationFailed');
-
-          FirebaseCrashlytics.instance
-              .log("AUTH EXCEPTION Verification ${e.code}");
-
-          onResult(Result(message: "VERIFICATION_FAILED"));
+          log('[USER REPO] requestOtp VERIFICATION FAILED - AUTH EXCEPTION $e');
+          onResult(Result(
+              message: "Verifikasi gagal, silahkan coba sesaat lagi",
+              error: true));
         },
         codeSent: (String id, int? token) {
-          verificationId = id;
-          resendToken = token;
+          _verificationId = id;
+          _resendToken = token;
 
-          dev.log('[CODE SENT]');
-          onResult(Result(message: "SENT"));
+          log('[USER REPO] requestOtp CODE SENT');
+          onResult(Result(message: "SENT", error: false));
         },
-        codeAutoRetrievalTimeout: (String verificationId) {},
-        forceResendingToken: resendToken,
+        codeAutoRetrievalTimeout: (String verificationId) {
+          log('[USER REPO] requestOtp AUTO RETRIEVAL FAILED, VERIFY MANUALLY');
+          onResult(Result(message: "MANUAL_VERIFICATION", error: false));
+        },
+        forceResendingToken: _resendToken,
       );
     } catch (e) {
-      dev.log("SOME ERROR OCCURED ${e.toString()}");
+      log("[USER REPO] requestOtp UNKNOWN ERROR OCCURRED $e");
+      onResult(Result(message: "UNKNOWN_ERROR", error: true));
     }
   }
 
-  void checkOTPCode(String smsCode, Function(Result) onResult) async {
+  Future<void> verifyOTP(
+      String smsCode, void Function(Result result) onResult) async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationId!,
+      verificationId: _verificationId!,
       smsCode: smsCode,
     );
 
     try {
-      await auth.signInWithCredential(credential);
-      onResult(Result(message: 'OK'));
+      await _auth.signInWithCredential(credential);
+      log('[USER REPO] verifyOTP MANUAL SIGNING SUCCESSFUL');
+      onResult(Result(message: "PROCEED", error: false));
     } on FirebaseAuthException catch (e) {
-      await FirebaseCrashlytics.instance
-          .recordError(e, e.stackTrace, reason: 'FirebaseAuthException');
-
-      FirebaseCrashlytics.instance.log("AUTH EXCEPTION ${e.code}");
-
-      dev.log('AUTH EXCEPTION ${e.code}');
+      log('[USER REPO] verifyOTP AuthException $e');
 
       if (e.code == "invalid-verification-code") {
-        dev.log('INVALID CODE');
-        onResult(Result(message: "INVALID_CODE"));
-        return;
+        log('[USER REPO] verifyOTP INVALID CODE');
+
+        onResult(Result(
+          message: "Kode OTP salah, silahkan periksa & coba masukkan kembali",
+          error: true,
+        ));
       } else if (e.code == "invalid-verification-id") {
-        dev.log('INVALID VERIFICATION ID');
-        onResult(Result(message: "INVALID_ID"));
-        return;
+        log('[USER REPO] verifyOTP INVALID VERIFICATION ID');
+
+        onResult(Result(
+          message: "Terjadi Kesalahan Silahkan Coba Kembali",
+          error: true,
+        ));
       } else if (e.code == 'session-expired') {
-        dev.log('SESSION EXPIRED');
-        onResult(Result(message: "EXPIRED"));
-        return;
+        log('[USER REPO] verifyOTP SESSION EXPIRED');
+
+        onResult(Result(
+          message: "Kode kadaluarsa, Silahkan kembali dan nomor HP kembali",
+          error: true,
+        ));
       } else {
-        dev.log('Unidentified error occurred in signInWithCredential');
-        dev.log(e.toString());
-        return;
+        log('[USER REPO] verifyOTP UNKNOWN ERROR OCCURRED $e');
+
+        onResult(Result(
+          message:
+              "Koneksi kami dengan anda sedang bermasalah, silahkan coba sesaat lagi",
+          error: true,
+        ));
       }
     }
   }
 
   Future<void> signOut() async {
-    if (signedUser != null) {
-      await FirebaseAuth.instance.signOut();
-      signedUser = null;
-    }
-    FirebaseCrashlytics.instance.setUserIdentifier("");
+    log('[USER REPO] signing out ...');
 
+    if (_signedUser != null) {
+      await FirebaseAuth.instance.signOut();
+      _signedUser = null;
+    }
+    // FirebaseCrashlytics.instance.setUserIdentifier("");
+
+    _localStorageService.deleteUser();
     if (onSigningOut != null) {
-      onSigningOut!();
+      _debounce.call(() {
+        onSigningOut!();
+      });
     }
   }
 
-  @override
   Future<bool> deleteUser(String phone) async {
-    if (user != null) {
+    if (_firebaseUser != null) {
       try {
-        await user!.delete();
+        await _firebaseUser!.delete();
       } catch (e) {
         throw Exception('sign to confirm');
       }
     }
-    return await fireStore.deleteUser(phone);
+    return await _fireStore.deleteUser(phone);
+  }
+
+  /// Get user from database
+  Future<UserApp?> getUser(GetUserRequest req) async {
+    final res = await _fireStore.getUsers(req);
+    if (res.isEmpty) return null;
+
+    print("getUser length ${res.length} $res");
+    return UserApp.fromJson(res.first as Map<String, dynamic>);
+  }
+
+  void testOnSuccess(String phone) async {
+    final user = await getUser(GetUserRequest(phone: phone));
+    await _signing(user!);
+    onSuccessSigning?.call(user);
   }
 }

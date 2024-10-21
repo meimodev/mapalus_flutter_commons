@@ -8,7 +8,7 @@ class GetPartnerRequest with _$GetPartnerRequest {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory GetPartnerRequest({
-    @Default('') String partnerId,
+    String? partnerId,
     @Default(0) int limit,
   }) = _GetPartnerRequest;
 }

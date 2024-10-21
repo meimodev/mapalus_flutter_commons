@@ -54,7 +54,7 @@ class OrderRepoImpl extends OrderRepo {
 
   @override
   Future<List<OrderApp>> readOrders(GetOrdersRequest req) async {
-    final res = await api.readOrders(req);
+    final res = await api.getOrders(req);
     return res
         .map((e) => OrderApp.fromJson(e as Map<String, dynamic>))
         .toList();

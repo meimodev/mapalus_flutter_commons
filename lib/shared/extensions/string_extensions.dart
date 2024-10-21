@@ -40,4 +40,18 @@ extension StringExtension on String {
       replaceAll("Rp. ", "").replaceAll(".", ""),
     );
   }
+
+  String getStringBetween(String start, String end) {
+    final startIndex = indexOf(start);
+    if (startIndex == -1) {
+      return ''; // Or throw an exception if you prefer
+    }
+
+    final endIndex = indexOf(end, startIndex + start.length);
+    if (endIndex == -1) {
+      return ''; // Or throw an exception if you prefer
+    }
+
+    return substring(startIndex + start.length, endIndex);
+  }
 }

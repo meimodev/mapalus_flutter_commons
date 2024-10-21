@@ -1,4 +1,5 @@
 import 'dart:developer' as dev;
+import 'dart:io';
 
 import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
 import 'package:mapalus_flutter_commons/models/models.dart';
@@ -49,5 +50,33 @@ class AppRepo extends AppRepoContract {
     return data != null
         ? Announcement.fromMap(data as Map<String, dynamic>)
         : null;
+  }
+
+  Future<String> getUserDeviceInfo() async {
+    // DeviceInfoPlugin dInfo = DeviceInfoPlugin();
+    String deviceInfoString = "";
+
+    if (Platform.isAndroid) {
+      // AndroidDeviceInfo androidInfo = await dInfo.androidInfo;
+      // deviceInfoString = '${androidInfo.manufacturer} '
+      //     '${androidInfo.model} '
+      //     'SDK:${androidInfo.version.sdkInt} '
+      //     '${androidInfo.version.codename} '
+      //     '${androidInfo.version.release}';
+      deviceInfoString = "Android";
+    }
+    if (Platform.isIOS) {
+      // IosDeviceInfo iosInfo = await dInfo.iosInfo;
+      // deviceInfoString =
+      //     '${iosInfo.utsname.machine} ${iosInfo.model} ${iosInfo.name} ${iosInfo.utsname.version}';
+      deviceInfoString = "iOS";
+    }
+
+    return deviceInfoString;
+  }
+
+  Future<String> getPushNotificationToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    return fcmToken ?? "";
   }
 }

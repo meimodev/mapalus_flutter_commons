@@ -52,15 +52,15 @@ class FirestoreService {
     return doc?.exists ?? false;
   }
 
-  Future<Object?> createUser(String phone, Map<String, dynamic> data) async {
+  Future<Object?> createOrUpdateUser(PostUserRequest req) async {
     final users = fireStore.collection(_keyCollectionUsers);
 
     await firestoreLogger(
-      () => users.doc(phone.phoneCleanUseZero).set(data),
-      'createUser',
+      () => users.doc(req.user.documentId).set(req.user.toJson()),
+      'createOrUpdateUser $req',
     );
 
-    return data;
+    return req.user.toJson();
   }
 
   Future<Object?> getDeliveryTimes() async {
@@ -187,26 +187,27 @@ class FirestoreService {
     return doc!.data();
   }
 
-  Future<List<Object?>> readOrders(GetOrdersRequest req) async {
-    final col = fireStore.collection(_keyCollectionOrders);
+  Future<List<Object?>> getOrders(GetOrdersRequest req) async {
+    final orders = fireStore.collection(_keyCollectionOrders);
 
+    Query<Map<String, dynamic>> query = orders;
     if (req.userApp != null) {
-      col.where(
-        'order_by.id',
-        isEqualTo: req.userApp!.id,
+      query = query.where(
+        'order_by.document_id',
+        isEqualTo: req.userApp!.documentId,
       );
     }
 
     if (req.partnerId != null) {
-      col.where('partner.id', isEqualTo: req.partnerId);
+      query = query.where('partner.id', isEqualTo: req.partnerId);
     }
 
     if (req.productIds.isNotEmpty) {
-      col.where('id', whereIn: req.productIds);
+      query = query.where('id', whereIn: req.productIds);
     }
 
     if (req.dateRange != null) {
-      col
+      query = query
           .where(
             'created_at',
             isGreaterThanOrEqualTo: Timestamp.fromDate(req.dateRange!.start),
@@ -218,7 +219,7 @@ class FirestoreService {
     }
 
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
-      col.get,
+      query.get,
       'readOrders $req',
     );
 
@@ -226,8 +227,7 @@ class FirestoreService {
       return [];
     }
 
-    final res = docs.docs.map((e) => e.data()).toList();
-    return res;
+    return docs.docs.map((e) => e.data()).toList();
   }
 
   // Stream<QuerySnapshot<Object?>> getOrdersStream() {
@@ -240,20 +240,12 @@ class FirestoreService {
     return orders.doc(orderId).snapshots();
   }
 
-  Future<Object?> updateProduct(String id, Map<String, dynamic> data) async {
-    final col = fireStore.collection(_keyCollectionProducts);
-    await firestoreLogger(
-      () => col.doc(id).set(data),
-      'updateProduct',
-    );
-    return data;
-  }
-
-  Future<Object?> createProduct(Map<String, dynamic> data, String id) async {
+  Future<Object?> createOrUpdateProduct(
+      Map<String, dynamic> data, String id) async {
     final products = fireStore.collection(_keyCollectionProducts);
 
     await firestoreLogger(
-      () async => await products.doc(id).set(data),
+      () => products.doc(id).set(data),
       'createProduct',
     );
 
@@ -271,16 +263,16 @@ class FirestoreService {
     return true;
   }
 
-  Future<Object?> readPartner(String partnerId) async {
-    CollectionReference col = fireStore.collection(_keyCollectionPartners);
-
-    DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      col.doc(partnerId).get,
-      'getPartner $partnerId',
-    );
-
-    return doc?.data();
-  }
+  // Future<Object?> getPartner(String partnerId) async {
+  //   CollectionReference col = fireStore.collection(_keyCollectionPartners);
+  //
+  //   DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
+  //     col.doc(partnerId).get,
+  //     'getPartner $partnerId',
+  //   );
+  //
+  //   return doc?.data();
+  // }
 
   Future<Object?> readDeliveryModifiers() async {
     final app = fireStore.collection(_keyCollectionApp);
@@ -310,92 +302,61 @@ class FirestoreService {
   }
 
   Future<Object?> queryUsersInfo(String dateTimeString) async {
-    final app = fireStore.collection(_keyCollectionApp);
+    // final app = fireStore.collection(_keyCollectionApp);
+    //
+    // final users = await getUsers();
+    // int usersWithOrder = 0;
+    // for (var u in users) {
+    //   final userMap = u as Map<String, dynamic>;
+    //   final userOrders = List.of(userMap["orders"]);
+    //   if (userOrders.isNotEmpty) {
+    //     usersWithOrder++;
+    //   }
+    // }
+    //
+    // final data = {
+    //   "last_query": dateTimeString,
+    //   "had_order": usersWithOrder,
+    //   "verified_count": users.length,
+    // };
+    //
+    // await firestoreLogger(
+    //   () => app.doc('users_info').set(data),
+    //   'queryUsersInfo',
+    // );
+    // return data;
+    return null;
+  }
 
-    final users = await getUsers();
-    int usersWithOrder = 0;
-    for (var u in users) {
-      final userMap = u as Map<String, dynamic>;
-      final userOrders = List.of(userMap["orders"]);
-      if (userOrders.isNotEmpty) {
-        usersWithOrder++;
-      }
+  Future<List<Object?>> getUsers(GetUserRequest req) async {
+    final users = fireStore.collection(_keyCollectionUsers);
+
+    Query<Map<String, dynamic>> query = users;
+    if (req.documentId != null) {
+      query = query.where("document_id", isEqualTo: req.documentId);
     }
 
-    final data = {
-      "last_query": dateTimeString,
-      "had_order": usersWithOrder,
-      "verified_count": users.length,
-    };
-
-    await firestoreLogger(
-      () => app.doc('users_info').set(data),
-      'queryUsersInfo',
-    );
-    return data;
-  }
-
-  Future<List<Object?>> getUsers() async {
-    final col = fireStore.collection(_keyCollectionUsers);
-
-    QuerySnapshot<Map<String, dynamic>>? users = await firestoreLogger(
-      col.get,
-      'getUsers',
-    );
-
-    List<Object?> res = [];
-    for (var user in users!.docs) {
-      res.add(user.data());
+    if (req.phone != null) {
+      query =
+          query.where("phone", isEqualTo: req.phone!.phoneCleanUseCountryCode);
     }
 
-    return res;
-  }
+    if (req.limit > 0) {
+      query = query.limit(req.limit);
+    }
 
-  Future<void> updateUserDeviceInfo(
-    String id,
-    String deviceInfoString,
-  ) async {
-    final users = fireStore.collection(_keyCollectionUsers);
-    await firestoreLogger(
-      () => users.doc(id).set(
-        {"device_info": deviceInfoString},
-        SetOptions(merge: true),
-      ),
-      'updateUserDeviceInfo',
+    QuerySnapshot<Map<String, dynamic>>? res = await firestoreLogger(
+      query.get,
+      'getUsers $req',
     );
-  }
 
-  Future<void> updateFcmToken(
-    String phone,
-    String? token,
-  ) async {
-    final users = fireStore.collection(_keyCollectionUsers);
-    await firestoreLogger(
-      () => users.doc(phone.phoneCleanUseZero).set(
-        {"fcm_token": token},
-        SetOptions(merge: true),
-      ),
-      'updateFcmToken',
-    );
-  }
-
-  Future<void> updateLastActiveTimeStamp(String phone) async {
-    final users = fireStore.collection(_keyCollectionUsers);
-    await firestoreLogger(
-      () => users.doc(phone.phoneCleanUseZero).set(
-        {"last_active_time_stamp": FieldValue.serverTimestamp()},
-        SetOptions(merge: true),
-      ),
-      'updateLastActiveTimeStamp',
-    );
+    return res?.docs.map((e) => e.data()).toList() ?? [];
   }
 
   Future<Object?> getAppAnnouncement() async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
-      () => app.doc('announcement').get(
-            const GetOptions(source: Source.server),
-          ),
+      () => app.doc('announcement').get(),
       'getAppAnnouncement',
     );
 
@@ -403,17 +364,18 @@ class FirestoreService {
   }
 
   Future<List<Object?>> getPartners(GetPartnerRequest req) async {
-    final col = fireStore.collection(_keyCollectionPartners);
+    final partners = fireStore.collection(_keyCollectionPartners);
 
-    if (req.partnerId.isNotEmpty) {
-      col.where('id', isEqualTo: req.partnerId);
+    if (req.partnerId != null) {
+      partners.where('id', isEqualTo: req.partnerId);
     }
+
     if (req.limit > 0) {
-      col.limit(req.limit);
+      partners.limit(req.limit);
     }
 
     QuerySnapshot<Map<String, dynamic>>? users = await firestoreLogger(
-      col.get,
+      partners.get,
       'getPartners GetPartnerRequest= $req',
     );
 
@@ -434,16 +396,17 @@ class FirestoreService {
   Future<List<Object?>> getProducts(GetProductRequest req) async {
     final products = fireStore.collection(_keyCollectionProducts);
 
+    Query<Map<String, dynamic>> query = products;
     if (req.partnerId.isNotEmpty) {
-      products.where("partner_id", isEqualTo: req.partnerId);
+      query = query.where("partner_id", isEqualTo: req.partnerId);
     }
 
     if (req.limit > 0) {
-      products.limit(req.limit);
+      query = query.limit(req.limit);
     }
 
     QuerySnapshot<Map<String, dynamic>>? docs = await firestoreLogger(
-      products.get,
+      query.get,
       'getProducts $req',
     );
 
@@ -480,12 +443,13 @@ class FirestoreService {
   Stream<List<Map<String, dynamic>>> exposeOrders(GetOrdersRequest req) {
     final orders = fireStore.collection(_keyCollectionOrders);
 
+    Query<Map<String, dynamic>> query = orders;
     if (req.partnerId != null) {
-      orders.where("partner_id", isEqualTo: req.partnerId);
+      query = query.where("partner_id", isEqualTo: req.partnerId);
     }
 
     if (req.dateRange != null) {
-      orders
+      query = query
           .where(
             'created_at',
             isGreaterThanOrEqualTo: Timestamp.fromDate(req.dateRange!.start),
@@ -501,15 +465,13 @@ class FirestoreService {
       'exposeOrders $req',
     );
 
-    final res = orders.snapshots().map(
+    return query.snapshots().map(
           (event) => event.docs
               .map(
                 (element) => element.data(),
               )
               .toList(),
         );
-
-    return res;
   }
 
   Stream<Map<String, dynamic>> exposeOrderDetails(String orderId) {

@@ -15,8 +15,15 @@ class Validator {
     if (value.isEmpty) {
       message = "$name Tidak bisa kosong";
     }
-    if (value.startsWith('0')) {
+    if (value.startsWith('0') && value.length == 1) {
       message = "$name Tidak bisa 0";
+    }
+    return this;
+  }
+
+  Validator mustStartsWith(String starts) {
+    if (!value.startsWith(starts)) {
+      message = "$name Harus dimulai dengan $starts";
     }
     return this;
   }
@@ -48,6 +55,10 @@ class Validator {
     }
 
     return message;
+  }
+
+  static bool hasError() {
+    return errorCount > 0;
   }
 
   static void resetErrorCounter() {

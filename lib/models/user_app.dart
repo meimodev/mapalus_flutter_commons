@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mapalus_flutter_commons/models/converter/converter.dart';
 
 part 'user_app.freezed.dart';
 part 'user_app.g.dart';
@@ -8,19 +9,16 @@ class UserApp with _$UserApp {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory UserApp({
-    /// from firebase uid
-    required String uid,
-    /// generated from uuid v4
-    @Default("") String partnerId,
-    required String id,
-    required String phone,
+    String? deviceInfo,
+    String? fcmToken,
+    required String documentId,
+    @TimestampToDateTimeConverter() DateTime? lastActiveTimeStamp,
     required String name,
-    @Default("") String deviceInfo,
-    @Default("") String fcmToken,
-    required DateTime lastActiveTimeStamp,
+    String? partnerId,
+    required String phone,
+    required String uid,
   }) = _UserApp;
 
   factory UserApp.fromJson(Map<String, Object?> json) =>
       _$UserAppFromJson(json);
-
 }
