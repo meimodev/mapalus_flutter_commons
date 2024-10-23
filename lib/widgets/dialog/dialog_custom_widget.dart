@@ -26,7 +26,7 @@ Future<T?> showDialogCustomWidget<T>({
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Gap.h24,
+          Gap.h12,
           Row(
             children: [
               Expanded(
@@ -46,9 +46,9 @@ Future<T?> showDialogCustomWidget<T>({
               ),
             ],
           ),
-          Gap.h16,
+          Gap.h12,
           content,
-          Gap.h48,
+          Gap.h12,
         ],
       ),
     ),

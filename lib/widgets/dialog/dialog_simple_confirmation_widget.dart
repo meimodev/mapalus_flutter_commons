@@ -32,41 +32,36 @@ class _DialogSimpleConfirmationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: BaseSize.w24,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.warning_amber_rounded,
-                color: BaseColor.negative,
-              ),
-              Gap.w4,
-              Text(
-                "Sentuh \"Lanjutkan\" untuk $action?",
-                textAlign: TextAlign.center,
-                style: BaseTypography.bodySmall,
-              ),
-            ],
-          ),
-          Gap.h12,
-          ButtonWidget(
-            text: "Lanjut",
-            padding: EdgeInsets.symmetric(
-              horizontal: BaseSize.w24,
-              vertical: BaseSize.h6,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.warning_amber_rounded,
+              color: BaseColor.negative,
             ),
-            backgroundColor: BaseColor.primary3,
-            textColor: BaseColor.white,
-            onPressed: onPressedPositive,
+            Gap.w4,
+            Text(
+              "Sentuh \"Lanjutkan\" untuk $action?",
+              textAlign: TextAlign.center,
+              style: BaseTypography.bodySmall,
+            ),
+          ],
+        ),
+        Gap.h12,
+        ButtonWidget(
+          text: "Lanjut",
+          padding: EdgeInsets.symmetric(
+            horizontal: BaseSize.w24,
+            vertical: BaseSize.h6,
           ),
-        ],
-      ),
+          backgroundColor: BaseColor.primary3,
+          textColor: BaseColor.white,
+          onPressed: onPressedPositive,
+        ),
+      ],
     );
   }
 }

@@ -145,15 +145,23 @@ class UserRepo extends UserRepoContract {
     return null;
   }
 
-  Future<UserApp> registerUser(PostUserRequest req) async {
-    final alteredReq = req.copyWith(
-      user: req.user.copyWith(
-        documentId: Uuid().v4(),
-        lastActiveTimeStamp: DateTime.now(),
-      ),
+  Future<UserApp> registerUser({required String name}) async {
+    if (_firebaseUser == null) {
+      throw Exception('verify phone first to continue registering');
+    }
+    final userApp = UserApp(
+      name: name,
+      phone: _firebaseUser!.phoneNumber!,
+      uid: _firebaseUser!.uid,
+      deviceInfo: await _appRepo.getUserDeviceInfo(),
+      fcmToken: await _appRepo.getPushNotificationToken(),
+      documentId: Uuid().v4(),
+      lastActiveTimeStamp: DateTime.now(),
     );
-    await _signing(alteredReq.user);
-    final res = await _fireStore.createOrUpdateUser(alteredReq);
+    await _signing(userApp);
+    final res = await _fireStore.createOrUpdateUser(
+      PostUserRequest(user: userApp),
+    );
     final data = res as Map<String, dynamic>;
     return UserApp.fromJson(data);
   }

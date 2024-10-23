@@ -54,4 +54,11 @@ extension StringExtension on String {
 
     return substring(startIndex + start.length, endIndex);
   }
+
+  String get toInitials {
+    if (contains(" ")){
+      return split(" ").map((e) => e[0]).join().toUpperCase();
+    }
+    return substring(0, 2).toUpperCase();
+  }
 }

@@ -6,4 +6,5 @@ export 'custom_image.dart';
 export 'dialog/dialog.dart';
 export 'input/input.dart';
 export 'loading_wrapper.dart';
+export 'pin_picker_widget.dart';
 export 'screen_wrapper.dart';
