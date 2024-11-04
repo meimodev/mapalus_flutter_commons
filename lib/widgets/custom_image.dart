@@ -8,10 +8,12 @@ class CustomImage extends StatelessWidget {
     super.key,
     required this.imageUrl,
     this.assetPath,
+    this.fit,
   });
 
   final String imageUrl;
   final String? assetPath;
+  final BoxFit? fit;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class CustomImage extends StatelessWidget {
     if (assetPath != null) {
       return Image.asset(
         assetPath!,
-        fit: BoxFit.cover,
+        fit: fit ?? BoxFit.cover,
       );
     }
 
@@ -38,7 +40,7 @@ class CustomImage extends StatelessWidget {
         CachedNetworkImage(
           imageUrl: imageUrl,
           fadeInDuration: const Duration(milliseconds: 400),
-          fit: BoxFit.cover,
+          fit: fit ?? BoxFit.cover,
           placeholder: (context, _) => Container(
             color: Colors.transparent,
           ),

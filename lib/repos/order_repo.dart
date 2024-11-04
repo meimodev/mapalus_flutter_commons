@@ -5,39 +5,39 @@ import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
 import 'package:mapalus_flutter_commons/shared/shared.dart';
 
-abstract class OrderRepo {
-  Future<OrderApp> createOrder(PostOrderRequest req);
+// abstract class OrderRepo {
+//   Future<OrderApp> createOrder(PostOrderRequest req);
+//
+//   Future<List<OrderApp>> readOrders(GetOrdersRequest req);
+//
+//   Future<bool> updateOrder(UpdateOrderRequest req);
+//
+//   Stream<List<ProductOrder>?> exposeLocalProductOrders();
+//
+//   Stream<List<OrderApp>> readOrdersStream(GetOrdersRequest req);
+//
+//   Stream<OrderApp> readOrderDetailStream(String orderId);
+//
+//   Future<List<ProductOrder>> readLocalProductOrders();
+//
+//   void updateLocalProductOrders(List<ProductOrder> productOrders);
+//
+//   void updateLocalNote(String note);
+//
+//   Future<String> readLocalNote();
+//
+//   void clearLocalProductOrders();
+//
+//   void clearLocalNote();
+//
+//   double calculateDeliveryFee(
+//     double distance,
+//     DeliveryModifiers modifiers,
+//     double weight,
+//   );
+// }
 
-  Future<List<OrderApp>> readOrders(GetOrdersRequest req);
-
-  Future<bool> updateOrder(UpdateOrderRequest req);
-
-  Stream<List<ProductOrder>?> exposeLocalProductOrders();
-
-  Stream<List<OrderApp>> readOrdersStream(GetOrdersRequest req);
-
-  Stream<OrderApp> readOrderDetailStream(String orderId);
-
-  Future<List<ProductOrder>> readLocalProductOrders();
-
-  void updateLocalProductOrders(List<ProductOrder> productOrders);
-
-  void updateLocalNote(String note);
-
-  Future<String> readLocalNote();
-
-  void clearLocalProductOrders();
-
-  void clearLocalNote();
-
-  double calculateDeliveryFee(
-    double distance,
-    DeliveryModifiers modifiers,
-    double weight,
-  );
-}
-
-class OrderRepoImpl extends OrderRepo {
+class OrderRepo /*extends OrderRepo*/ {
   //coupling with service class, remove later!!!!
   FirestoreService api = FirestoreService();
   LocalStorageService localStorageService = LocalStorageService();
@@ -45,14 +45,12 @@ class OrderRepoImpl extends OrderRepo {
   StreamController<List<ProductOrder>?> localProductOrdersStream =
       StreamController<List<ProductOrder>?>.broadcast();
 
-  @override
   Future<OrderApp> createOrder(PostOrderRequest req) async {
     await api.createOrUpdateOrder(req);
     //TODO trigger notification
     return req.order;
   }
 
-  @override
   Future<List<OrderApp>> readOrders(GetOrdersRequest req) async {
     final res = await api.getOrders(req);
     return res
@@ -60,7 +58,6 @@ class OrderRepoImpl extends OrderRepo {
         .toList();
   }
 
-  @override
   Stream<List<OrderApp>> readOrdersStream(GetOrdersRequest req) {
     final orders = api.exposeOrders(req);
     return orders.map(
@@ -68,13 +65,11 @@ class OrderRepoImpl extends OrderRepo {
     );
   }
 
-  @override
   Stream<OrderApp> readOrderDetailStream(String orderId) {
     final order = api.exposeOrderDetails(orderId);
     return order.map(OrderApp.fromJson);
   }
 
-  @override
   Future<bool> updateOrder(UpdateOrderRequest req) async {
     return await api.createOrUpdateOrder(
       PostOrderRequest(
@@ -83,46 +78,39 @@ class OrderRepoImpl extends OrderRepo {
     );
   }
 
-  @override
   Future<List<ProductOrder>> readLocalOrders() {
     // TODO: implement readLocalOrders
     throw UnimplementedError();
   }
 
-  @override
   Future<List<ProductOrder>> updateLocalOrders(
       List<ProductOrder> productOrders) {
     // TODO: implement updateLocalOrders
     throw UnimplementedError();
   }
 
-  @override
   Stream<List<ProductOrder>?> exposeLocalProductOrders() {
     return localProductOrdersStream.stream;
   }
 
-  @override
   Future<List<ProductOrder>> readLocalProductOrders() {
     return localStorageService.readProductOrders();
   }
 
-  @override
   void updateLocalProductOrders(List<ProductOrder> productOrders) async {
-    await localStorageService.updateProductOrders(productOrders);
+    await localStorageService.saveProductOrders(productOrders);
+    // print(" productOrders $productOrders");
     localProductOrdersStream.add(productOrders);
   }
 
-  @override
   Future<String> readLocalNote() async {
     return localStorageService.readNote();
   }
 
-  @override
   void updateLocalNote(String note) {
     return localStorageService.saveNote(note);
   }
 
-  @override
   double calculateDeliveryFee(
     double distance,
     DeliveryModifiers modifiers,
@@ -140,17 +128,15 @@ class OrderRepoImpl extends OrderRepo {
         (fixedWeight * modifiers.weightPrice);
   }
 
-  @override
   void clearLocalNote() {
     localStorageService.deleteNote();
   }
 
-  @override
   void clearLocalProductOrders() {
     localStorageService.deleteProductOrders();
   }
 
-// @override
+//
 // Future<List<OrderApp>> readUserOrders(UserApp user) async {
 //   final res = await api.readUserOrders(user.phone);
 //   final data =
@@ -158,7 +144,7 @@ class OrderRepoImpl extends OrderRepo {
 //   return data;
 // }
 
-// @override
+//
 // Future<OrderApp> updateOrderStatus({required OrderApp order}) async {
 //   late final Map<String, dynamic> timestamp;
 //   switch (order.status) {

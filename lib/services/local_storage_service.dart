@@ -15,6 +15,7 @@ class LocalStorageService {
     final listMap =
         productOrders.map<Map<String, dynamic>>((e) => e.toJson()).toList();
 
+    print("saveProductOrders $listMap");
     await _boxProductOrders.put(
       HiveKeys.productOrders,
       jsonEncode(listMap),
@@ -26,6 +27,7 @@ class LocalStorageService {
     if (jsonString == null) {
       return [];
     }
+    print("readProductOrders $jsonString");
     final List<ProductOrder> po = (jsonDecode(jsonString) as List<dynamic>)
         .map((e) => ProductOrder.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -71,7 +73,7 @@ class LocalStorageService {
     );
   }
 
-  void deleteUser() async {
+  Future<void> deleteUser() async {
     await _boxUser.clear();
   }
 }

@@ -39,6 +39,10 @@ extension XDateTime on DateTime {
     return toJiffy.endOf(Unit.day).dateTime;
   }
 
+  DateTime get toStartOfTheYear {
+    return toJiffy.startOf(Unit.year).dateTime;
+  }
+
   /// 24/01/2002
   String get slashDate {
     return toStringFormatted('dd/MM/yyyy');

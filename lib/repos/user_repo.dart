@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' show log;
 
 import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
@@ -8,21 +9,11 @@ import 'package:uuid/uuid.dart';
 
 import 'app_repo.dart';
 
-abstract class UserRepoContract {
-  // Future<UserApp?> readSignedInUser();
-  //
-  // Future<bool> checkIfRegistered(String phone);
-  //
-  // Future<UserApp> registerUser(String phone, String name);
-  //
-  // void requestOTP(String phone, Function(Result) onResult);
-  //
-  // Future<bool> deleteUser(String phone);
-}
+abstract class UserRepoContract {}
 
 class UserRepo extends UserRepoContract {
   final _fireStore = FirestoreService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
 
   final AppRepo _appRepo;
   final LocalStorageService _localStorageService;
@@ -30,14 +21,15 @@ class UserRepo extends UserRepoContract {
   UserApp? _signedUser;
   int? _resendToken;
   String? _verificationId;
+  User? _firebaseUser;
 
   void Function(UserApp value)? onSuccessSigning;
   void Function(String value)? onUnregisteredUser;
   void Function()? onSigningOut;
 
-  User? _firebaseUser;
-
   final _debounce = Debounce(Duration(milliseconds: 500));
+
+  final _userAppStream = StreamController<UserApp?>.broadcast();
 
   UserRepo({
     required AppRepo appRepo,
@@ -76,6 +68,7 @@ class UserRepo extends UserRepoContract {
         return;
       }
       // user is not registered
+
       if (onUnregisteredUser != null) {
         _debounce.call(() {
           onUnregisteredUser!(user.phoneNumber!);
@@ -91,6 +84,11 @@ class UserRepo extends UserRepoContract {
     // final updatedUser = await updateUserMetaData(user);
     _localStorageService.saveUser(user);
     _signedUser = user;
+
+    _debounce.call(() {
+      _userAppStream.add(user);
+    });
+
     if (onSuccessSigning != null) {
       _debounce.call(() {
         onSuccessSigning!(user);
@@ -166,7 +164,6 @@ class UserRepo extends UserRepoContract {
     return UserApp.fromJson(data);
   }
 
-  // @override
   Future<void> requestOTP(
       String phone, Function(Result result) onResult) async {
     try {
@@ -252,13 +249,14 @@ class UserRepo extends UserRepoContract {
   Future<void> signOut() async {
     log('[USER REPO] signing out ...');
 
-    if (_signedUser != null) {
-      await FirebaseAuth.instance.signOut();
-      _signedUser = null;
-    }
-    // FirebaseCrashlytics.instance.setUserIdentifier("");
+    await FirebaseAuth.instance.signOut();
+    _signedUser = null;
+    await _localStorageService.deleteUser();
+    _firebaseUser = null;
+    _debounce.call(() {
+      _userAppStream.add(null);
+    });
 
-    _localStorageService.deleteUser();
     if (onSigningOut != null) {
       _debounce.call(() {
         onSigningOut!();
@@ -282,13 +280,15 @@ class UserRepo extends UserRepoContract {
     final res = await _fireStore.getUsers(req);
     if (res.isEmpty) return null;
 
-    print("getUser length ${res.length} $res");
     return UserApp.fromJson(res.first as Map<String, dynamic>);
   }
+
+  Stream<UserApp?> get userAppStream => _userAppStream.stream;
 
   void testOnSuccess(String phone) async {
     final user = await getUser(GetUserRequest(phone: phone));
     await _signing(user!);
     onSuccessSigning?.call(user);
+    _userAppStream.add(user);
   }
 }

@@ -199,7 +199,7 @@ class FirestoreService {
     }
 
     if (req.partnerId != null) {
-      query = query.where('partner.id', isEqualTo: req.partnerId);
+      query = query.where('partner_id', isEqualTo: req.partnerId);
     }
 
     if (req.productIds.isNotEmpty) {
@@ -397,6 +397,11 @@ class FirestoreService {
     final products = fireStore.collection(_keyCollectionProducts);
 
     Query<Map<String, dynamic>> query = products;
+
+    if (req.productId.isNotEmpty) {
+      query = query.where("id", isEqualTo: req.productId);
+    }
+
     if (req.partnerId.isNotEmpty) {
       query = query.where("partner_id", isEqualTo: req.partnerId);
     }
