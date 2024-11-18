@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mapalus_flutter_commons/models/converter/converter.dart';
 
 part 'rating.freezed.dart';
-
 part 'rating.g.dart';
 
 @freezed
@@ -13,10 +13,9 @@ class Rating with _$Rating {
     required String orderId,
     required String userId,
     @Default("") String message,
-    @Default(0) int rate,
-    required DateTime createdAt,
+    @Default(0) double rate,
+    @TimestampToDateTimeConverter() required DateTime createdAt,
   }) = _Rating;
 
-  factory Rating.fromJson(Map<String, Object?> json) =>
-      _$RatingFromJson(json);
+  factory Rating.fromJson(Map<String, Object?> json) => _$RatingFromJson(json);
 }

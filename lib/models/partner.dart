@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'models.dart';
 
 part 'partner.freezed.dart';
-
 part 'partner.g.dart';
 
 @freezed
@@ -14,6 +13,7 @@ class Partner with _$Partner {
     required String id,
     required String name,
     @Default("") String image,
+    @Default("") String fcmToken,
     @TimestampToDateTimeConverter() required DateTime lastActiveTimeStamp,
     Location? location,
   }) = _Partner;

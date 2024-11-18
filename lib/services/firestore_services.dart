@@ -366,16 +366,17 @@ class FirestoreService {
   Future<List<Object?>> getPartners(GetPartnerRequest req) async {
     final partners = fireStore.collection(_keyCollectionPartners);
 
+    Query<Map<String, dynamic>> query = partners;
     if (req.partnerId != null) {
-      partners.where('id', isEqualTo: req.partnerId);
+      query.where('id', isEqualTo: req.partnerId);
     }
 
     if (req.limit > 0) {
-      partners.limit(req.limit);
+      query.limit(req.limit);
     }
 
     QuerySnapshot<Map<String, dynamic>>? users = await firestoreLogger(
-      partners.get,
+      query.get,
       'getPartners GetPartnerRequest= $req',
     );
 

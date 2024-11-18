@@ -7,10 +7,12 @@ class LoadingWrapper extends StatelessWidget {
     required this.loading,
     required this.child,
     this.size,
+    this.addedWidget,
   });
 
   final bool loading;
   final Widget child;
+  final Widget? addedWidget;
 
   final double? size;
 
@@ -20,14 +22,22 @@ class LoadingWrapper extends StatelessWidget {
       duration: const Duration(milliseconds: 400),
       child: loading
           ? Center(
-              child: SizedBox(
-                width: size,
-                height: size,
-                child: const CircularProgressIndicator(
-                  color: BaseColor.primary3,
-                ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            addedWidget != null ? addedWidget! : const SizedBox(),
+            addedWidget != null ? Gap.h12 : const SizedBox(),
+            SizedBox(
+              width: size,
+              height: size,
+              child: const CircularProgressIndicator(
+                color: BaseColor.primary3,
               ),
-            )
+            ),
+          ],
+        ),
+
+      )
           : child,
     );
   }

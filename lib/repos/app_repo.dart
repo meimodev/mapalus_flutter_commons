@@ -5,10 +5,16 @@ import 'package:mapalus_flutter_commons/mapalus_flutter_commons.dart';
 import 'package:mapalus_flutter_commons/models/models.dart';
 import 'package:mapalus_flutter_commons/services/services.dart';
 
-class AppRepoContract {}
+abstract class AppRepoContract {}
 
-class AppRepo extends AppRepoContract {
-  FirestoreService firestoreService = FirestoreService();
+class AppRepo /*extends AppRepoContract*/ {
+  final FirestoreService firestoreService;
+  final NotificationService notificationService;
+
+  AppRepo({
+    required this.firestoreService,
+    required this.notificationService,
+  });
 
   Future<List<DeliveryTime>> getDeliveryTimes() async {
     final res = await firestoreService.getDeliveryTimes();
@@ -78,5 +84,9 @@ class AppRepo extends AppRepoContract {
   Future<String> getPushNotificationToken() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     return fcmToken ?? "";
+  }
+
+  Future<String?> sendNotification(PostNotificationRequest req) async {
+    return await notificationService.postNotification(req);
   }
 }

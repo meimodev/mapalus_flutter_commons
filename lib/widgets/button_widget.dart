@@ -12,11 +12,14 @@ class ButtonWidget extends StatelessWidget {
     this.icon,
     this.size,
     this.onLongPressed,
+    this.textStyle,
+    this.enable = true,
   });
 
   final VoidCallback? onPressed;
   final VoidCallback? onLongPressed;
   final String? text;
+  final TextStyle? textStyle;
   final EdgeInsets? padding;
 
   final Color? backgroundColor;
@@ -24,12 +27,15 @@ class ButtonWidget extends StatelessWidget {
   final IconData? icon;
 
   final double? size;
+  final bool enable;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(BaseSize.radiusMd),
-      color: backgroundColor ?? BaseColor.primary3,
+      color: enable
+          ? backgroundColor ?? BaseColor.primary3
+          : BaseColor.secondaryText.withOpacity(.5),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: onPressed,
@@ -49,16 +55,21 @@ class ButtonWidget extends StatelessWidget {
                     : Text(
                         text!,
                         textAlign: TextAlign.center,
-                        style: BaseTypography.button.copyWith(
-                          color: textColor ?? BaseColor.primaryText,
-                        ),
+                        style: textStyle ??
+                            BaseTypography.button.copyWith(
+                              color: enable
+                                  ? textColor ?? BaseColor.primaryText
+                                  : BaseColor.accent.withOpacity(.5),
+                            ),
                       ),
                 icon == null || text == null ? const SizedBox() : Gap.w8,
                 icon == null
                     ? const SizedBox()
                     : Icon(
                         icon!,
-                        color: textColor ?? BaseColor.primaryText,
+                        color: enable
+                            ? textColor ?? BaseColor.primaryText
+                            : BaseColor.accent,
                         size: size,
                       ),
               ],
