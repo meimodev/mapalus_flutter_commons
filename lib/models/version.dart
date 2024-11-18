@@ -33,7 +33,8 @@ class Version {
           patch == other.patch;
 
   bool operator >(Version version) =>
-      major > version.major || minor > version.minor;
+      int.parse("$major$patch$minor") >
+      int.parse("${version.major}${version.patch}${version.minor}");
 
   @override
   int get hashCode => major.hashCode ^ minor.hashCode ^ patch.hashCode;
