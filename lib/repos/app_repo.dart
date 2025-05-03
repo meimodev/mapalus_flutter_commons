@@ -10,6 +10,7 @@ abstract class AppRepoContract {}
 class AppRepo /*extends AppRepoContract*/ {
   final FirestoreService firestoreService;
   final NotificationService notificationService;
+  static const String adminPhone = "089503162551";
 
   AppRepo({
     required this.firestoreService,

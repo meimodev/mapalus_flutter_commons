@@ -14,11 +14,9 @@ class OnlineStorageService {
 
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  Future<String?> uploadImage(
-    File image,
-    String folderName,
-    String fileName,
-  ) async {
+  Future<String?> uploadImage(File image,
+      String folderName,
+      String fileName,) async {
     final path = "$folderName/$fileName.jpg";
     final ref = _storage.ref().child(path);
     try {
@@ -30,6 +28,22 @@ class OnlineStorageService {
     } catch (e) {
       log("[FIREBASE STORAGE] UPLOAD IMAGE FAILED $e");
       return null;
+    }
+  }
+
+  Future<bool> deleteImage(
+      String folderName,
+      String fileName,) async {
+    final path = "$folderName/$fileName.jpg";
+    final ref = _storage.ref().child(path);
+    log("[FIREBASE STORAGE] deleting image $path ...");
+
+    try {
+      await ref.delete();
+      return true;
+    } catch (e) {
+      log("[FIREBASE STORAGE] DELETE IMAGE FAILED $e");
+      return false;
     }
   }
 }

@@ -24,6 +24,7 @@ extension StringExtension on String {
     return contains('+62') ? replaceFirst('+62', '0') : this;
   }
 
+  ///Replace the first 0 with indonesia countrycode +62
   String get phoneCleanUseCountryCode {
     return substring(0, 1) == "0" ? replaceFirst("0", "+62") : this;
   }

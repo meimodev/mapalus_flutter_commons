@@ -246,7 +246,7 @@ class FirestoreService {
 
     await firestoreLogger(
       () => products.doc(id).set(data),
-      'createProduct',
+      'createOrUpdateProduct $data',
     );
 
     return data;
@@ -257,7 +257,7 @@ class FirestoreService {
 
     await firestoreLogger(
       () => products.doc(productId).delete(),
-      'deleteProduct',
+      'deleteProduct $productId',
     );
 
     return true;
@@ -368,19 +368,19 @@ class FirestoreService {
 
     Query<Map<String, dynamic>> query = partners;
     if (req.partnerId != null) {
-      query.where('id', isEqualTo: req.partnerId);
+      query = query.where('id', isEqualTo: req.partnerId);
     }
 
     if (req.limit > 0) {
-      query.limit(req.limit);
+      query = query.limit(req.limit);
     }
 
-    QuerySnapshot<Map<String, dynamic>>? users = await firestoreLogger(
+    QuerySnapshot<Map<String, dynamic>>? result = await firestoreLogger(
       query.get,
       'getPartners GetPartnerRequest= $req',
     );
 
-    return users?.docs.map((e) => e.data()).toList() ?? [];
+    return result?.docs.map((e) => e.data()).toList() ?? [];
   }
 
   Future<Object?> updatePartner(UpdatePartnerRequest req) async {
@@ -420,14 +420,15 @@ class FirestoreService {
   }
 
   Stream<List<Map<String, dynamic>>> exposeProducts(GetProductRequest req) {
-    final products = fireStore.collection(_keyCollectionProducts);
+    var products = fireStore.collection(_keyCollectionProducts);
 
+    Query<Map<String, dynamic>> query = products;
     if (req.partnerId.isNotEmpty) {
-      products.where("partner_id", isEqualTo: req.partnerId);
+      query = query.where("partner_id", isEqualTo: req.partnerId);
     }
 
     if (req.limit > 0) {
-      products.limit(req.limit);
+      query =  query.limit(req.limit);
     }
 
     firestoreLogger(
@@ -435,7 +436,7 @@ class FirestoreService {
       'exposeProducts $req',
     );
 
-    final res = products.snapshots().map(
+    final res = query.snapshots().map(
           (event) => event.docs
               .map(
                 (element) => element.data(),
