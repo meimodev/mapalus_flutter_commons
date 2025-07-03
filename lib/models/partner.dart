@@ -6,7 +6,7 @@ part 'partner.freezed.dart';
 part 'partner.g.dart';
 
 @freezed
-class Partner with _$Partner {
+abstract class Partner with _$Partner {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Partner({

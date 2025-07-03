@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,153 +9,281 @@ part of 'update_order_request.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
 /// @nodoc
 mixin _$UpdateOrderRequest {
-  OrderApp get orderApp => throw _privateConstructorUsedError;
 
-  /// Create a copy of UpdateOrderRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $UpdateOrderRequestCopyWith<UpdateOrderRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+ OrderApp get orderApp;
+/// Create a copy of UpdateOrderRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UpdateOrderRequestCopyWith<UpdateOrderRequest> get copyWith => _$UpdateOrderRequestCopyWithImpl<UpdateOrderRequest>(this as UpdateOrderRequest, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateOrderRequest&&(identical(other.orderApp, orderApp) || other.orderApp == orderApp));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,orderApp);
+
+@override
+String toString() {
+  return 'UpdateOrderRequest(orderApp: $orderApp)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $UpdateOrderRequestCopyWith<$Res> {
-  factory $UpdateOrderRequestCopyWith(
-          UpdateOrderRequest value, $Res Function(UpdateOrderRequest) then) =
-      _$UpdateOrderRequestCopyWithImpl<$Res, UpdateOrderRequest>;
-  @useResult
-  $Res call({OrderApp orderApp});
+abstract mixin class $UpdateOrderRequestCopyWith<$Res>  {
+  factory $UpdateOrderRequestCopyWith(UpdateOrderRequest value, $Res Function(UpdateOrderRequest) _then) = _$UpdateOrderRequestCopyWithImpl;
+@useResult
+$Res call({
+ OrderApp orderApp
+});
 
-  $OrderAppCopyWith<$Res> get orderApp;
+
+$OrderAppCopyWith<$Res> get orderApp;
+
 }
-
 /// @nodoc
-class _$UpdateOrderRequestCopyWithImpl<$Res, $Val extends UpdateOrderRequest>
+class _$UpdateOrderRequestCopyWithImpl<$Res>
     implements $UpdateOrderRequestCopyWith<$Res> {
-  _$UpdateOrderRequestCopyWithImpl(this._value, this._then);
+  _$UpdateOrderRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final UpdateOrderRequest _self;
+  final $Res Function(UpdateOrderRequest) _then;
 
-  /// Create a copy of UpdateOrderRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? orderApp = null,
-  }) {
-    return _then(_value.copyWith(
-      orderApp: null == orderApp
-          ? _value.orderApp
-          : orderApp // ignore: cast_nullable_to_non_nullable
-              as OrderApp,
-    ) as $Val);
-  }
+/// Create a copy of UpdateOrderRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? orderApp = null,}) {
+  return _then(_self.copyWith(
+orderApp: null == orderApp ? _self.orderApp : orderApp // ignore: cast_nullable_to_non_nullable
+as OrderApp,
+  ));
+}
+/// Create a copy of UpdateOrderRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$OrderAppCopyWith<$Res> get orderApp {
+  
+  return $OrderAppCopyWith<$Res>(_self.orderApp, (value) {
+    return _then(_self.copyWith(orderApp: value));
+  });
+}
+}
 
-  /// Create a copy of UpdateOrderRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $OrderAppCopyWith<$Res> get orderApp {
-    return $OrderAppCopyWith<$Res>(_value.orderApp, (value) {
-      return _then(_value.copyWith(orderApp: value) as $Val);
-    });
-  }
+
+/// Adds pattern-matching-related methods to [UpdateOrderRequest].
+extension UpdateOrderRequestPatterns on UpdateOrderRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _UpdateOrderRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _UpdateOrderRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _UpdateOrderRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _UpdateOrderRequest():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _UpdateOrderRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _UpdateOrderRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( OrderApp orderApp)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _UpdateOrderRequest() when $default != null:
+return $default(_that.orderApp);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( OrderApp orderApp)  $default,) {final _that = this;
+switch (_that) {
+case _UpdateOrderRequest():
+return $default(_that.orderApp);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( OrderApp orderApp)?  $default,) {final _that = this;
+switch (_that) {
+case _UpdateOrderRequest() when $default != null:
+return $default(_that.orderApp);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$UpdateOrderRequestImplCopyWith<$Res>
-    implements $UpdateOrderRequestCopyWith<$Res> {
-  factory _$$UpdateOrderRequestImplCopyWith(_$UpdateOrderRequestImpl value,
-          $Res Function(_$UpdateOrderRequestImpl) then) =
-      __$$UpdateOrderRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({OrderApp orderApp});
 
-  @override
-  $OrderAppCopyWith<$Res> get orderApp;
+
+class _UpdateOrderRequest implements UpdateOrderRequest {
+  const _UpdateOrderRequest({required this.orderApp});
+  
+
+@override final  OrderApp orderApp;
+
+/// Create a copy of UpdateOrderRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateOrderRequestCopyWith<_UpdateOrderRequest> get copyWith => __$UpdateOrderRequestCopyWithImpl<_UpdateOrderRequest>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateOrderRequest&&(identical(other.orderApp, orderApp) || other.orderApp == orderApp));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,orderApp);
+
+@override
+String toString() {
+  return 'UpdateOrderRequest(orderApp: $orderApp)';
+}
+
+
 }
 
 /// @nodoc
-class __$$UpdateOrderRequestImplCopyWithImpl<$Res>
-    extends _$UpdateOrderRequestCopyWithImpl<$Res, _$UpdateOrderRequestImpl>
-    implements _$$UpdateOrderRequestImplCopyWith<$Res> {
-  __$$UpdateOrderRequestImplCopyWithImpl(_$UpdateOrderRequestImpl _value,
-      $Res Function(_$UpdateOrderRequestImpl) _then)
-      : super(_value, _then);
+abstract mixin class _$UpdateOrderRequestCopyWith<$Res> implements $UpdateOrderRequestCopyWith<$Res> {
+  factory _$UpdateOrderRequestCopyWith(_UpdateOrderRequest value, $Res Function(_UpdateOrderRequest) _then) = __$UpdateOrderRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ OrderApp orderApp
+});
 
-  /// Create a copy of UpdateOrderRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? orderApp = null,
-  }) {
-    return _then(_$UpdateOrderRequestImpl(
-      orderApp: null == orderApp
-          ? _value.orderApp
-          : orderApp // ignore: cast_nullable_to_non_nullable
-              as OrderApp,
-    ));
-  }
+
+@override $OrderAppCopyWith<$Res> get orderApp;
+
 }
-
 /// @nodoc
+class __$UpdateOrderRequestCopyWithImpl<$Res>
+    implements _$UpdateOrderRequestCopyWith<$Res> {
+  __$UpdateOrderRequestCopyWithImpl(this._self, this._then);
 
-class _$UpdateOrderRequestImpl implements _UpdateOrderRequest {
-  const _$UpdateOrderRequestImpl({required this.orderApp});
+  final _UpdateOrderRequest _self;
+  final $Res Function(_UpdateOrderRequest) _then;
 
-  @override
-  final OrderApp orderApp;
-
-  @override
-  String toString() {
-    return 'UpdateOrderRequest(orderApp: $orderApp)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$UpdateOrderRequestImpl &&
-            (identical(other.orderApp, orderApp) ||
-                other.orderApp == orderApp));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, orderApp);
-
-  /// Create a copy of UpdateOrderRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$UpdateOrderRequestImplCopyWith<_$UpdateOrderRequestImpl> get copyWith =>
-      __$$UpdateOrderRequestImplCopyWithImpl<_$UpdateOrderRequestImpl>(
-          this, _$identity);
+/// Create a copy of UpdateOrderRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? orderApp = null,}) {
+  return _then(_UpdateOrderRequest(
+orderApp: null == orderApp ? _self.orderApp : orderApp // ignore: cast_nullable_to_non_nullable
+as OrderApp,
+  ));
 }
 
-abstract class _UpdateOrderRequest implements UpdateOrderRequest {
-  const factory _UpdateOrderRequest({required final OrderApp orderApp}) =
-      _$UpdateOrderRequestImpl;
-
-  @override
-  OrderApp get orderApp;
-
-  /// Create a copy of UpdateOrderRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UpdateOrderRequestImplCopyWith<_$UpdateOrderRequestImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+/// Create a copy of UpdateOrderRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$OrderAppCopyWith<$Res> get orderApp {
+  
+  return $OrderAppCopyWith<$Res>(_self.orderApp, (value) {
+    return _then(_self.copyWith(orderApp: value));
+  });
 }
+}
+
+// dart format on

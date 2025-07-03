@@ -5,7 +5,7 @@ import 'package:mapalus_flutter_commons/models/models.dart';
 part 'get_orders_request.freezed.dart';
 
 @freezed
-class GetOrdersRequest with _$GetOrdersRequest {
+abstract class GetOrdersRequest with _$GetOrdersRequest {
   const factory GetOrdersRequest({
     @Default([]) List<String> productIds,
     DateTimeRange? dateRange,

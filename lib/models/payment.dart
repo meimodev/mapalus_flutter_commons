@@ -7,7 +7,7 @@ part 'payment.freezed.dart';
 part 'payment.g.dart';
 
 @freezed
-class Payment with _$Payment {
+abstract class Payment with _$Payment {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Payment({

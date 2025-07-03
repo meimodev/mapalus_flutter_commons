@@ -5,7 +5,7 @@ part 'user_app.freezed.dart';
 part 'user_app.g.dart';
 
 @freezed
-class UserApp with _$UserApp {
+abstract class UserApp with _$UserApp {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory UserApp({

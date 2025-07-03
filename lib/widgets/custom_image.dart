@@ -44,7 +44,7 @@ class CustomImage extends StatelessWidget {
           placeholder: (context, _) => Container(
             color: Colors.transparent,
           ),
-          errorWidget: (context, _, __) => Container(
+          errorWidget: (context, _, _) => Container(
             color: BaseColor.accent,
             child: Center(
               child: SvgPicture.asset(
@@ -60,7 +60,7 @@ class CustomImage extends StatelessWidget {
     );
   }
 
-  _buildInvalidUrl() {
+  Widget _buildInvalidUrl() {
     return Container(
       width: BaseSize.w32,
       height: BaseSize.w32,

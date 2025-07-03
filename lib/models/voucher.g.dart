@@ -6,16 +6,14 @@ part of 'voucher.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$VoucherImpl _$$VoucherImplFromJson(Map<String, dynamic> json) =>
-    _$VoucherImpl(
-      id: json['id'] as String,
-      code: json['code'] as String,
-      discount: (json['discount'] as num).toDouble(),
-    );
+_Voucher _$VoucherFromJson(Map<String, dynamic> json) => _Voucher(
+  id: json['id'] as String,
+  code: json['code'] as String,
+  discount: (json['discount'] as num).toDouble(),
+);
 
-Map<String, dynamic> _$$VoucherImplToJson(_$VoucherImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'code': instance.code,
-      'discount': instance.discount,
-    };
+Map<String, dynamic> _$VoucherToJson(_Voucher instance) => <String, dynamic>{
+  'id': instance.id,
+  'code': instance.code,
+  'discount': instance.discount,
+};

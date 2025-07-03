@@ -4,7 +4,7 @@ import 'package:mapalus_flutter_commons/models/models.dart';
 part 'post_user_request.freezed.dart';
 
 @freezed
-class PostUserRequest with _$PostUserRequest {
+abstract class PostUserRequest with _$PostUserRequest {
   const factory PostUserRequest({
     // required List<ProductOrder> products,
     // required UserApp user,

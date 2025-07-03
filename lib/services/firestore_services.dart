@@ -138,7 +138,7 @@ class FirestoreService {
     return res;
   }
 
-  Future<Object?> getAppVersion({isMapalus = true}) async {
+  Future<Object?> getAppVersion({bool isMapalus = true}) async {
     final app = fireStore.collection(_keyCollectionApp);
     DocumentSnapshot<Map<String, dynamic>>? doc = await firestoreLogger(
       app.doc(isMapalus ? 'mapalus' : "mapalus_partner").get,

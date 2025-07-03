@@ -4,7 +4,7 @@ part 'get_product_request.freezed.dart';
 part 'get_product_request.g.dart';
 
 @freezed
-class GetProductRequest with _$GetProductRequest {
+abstract class GetProductRequest with _$GetProductRequest {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory GetProductRequest({

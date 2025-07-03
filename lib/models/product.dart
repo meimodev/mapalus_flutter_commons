@@ -105,7 +105,7 @@ part 'product.freezed.dart';
 part 'product.g.dart';
 
 @freezed
-class Product with _$Product {
+abstract class Product with _$Product {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Product({

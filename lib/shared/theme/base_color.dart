@@ -27,7 +27,7 @@ class BaseColor {
   static const Color positive = Color(_greenPrimaryValue);
   static const Color negative = Color(_redPrimaryValue);
 
-  static Color  primaryLight = primary3.withOpacity(.5);
+  static Color  primaryLight = primary3.withValues(alpha: .5);
 
   static const MaterialColor neutral = MaterialColor(
     _neutralPrimaryValue,

@@ -73,7 +73,7 @@ class CardOrder extends StatelessWidget {
     );
   }
 
-  _buildCardOrderStatus() {
+  Widget _buildCardOrderStatus() {
     switch (order.status) {
       case OrderStatus.placed:
         return const _BuildCardOrderStatus(

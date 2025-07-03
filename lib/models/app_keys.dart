@@ -4,7 +4,7 @@ part 'app_keys.freezed.dart';
 part 'app_keys.g.dart';
 
 @freezed
-class AppKeys with _$AppKeys {
+abstract class AppKeys with _$AppKeys {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory AppKeys({

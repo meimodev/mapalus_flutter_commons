@@ -6,7 +6,7 @@ part 'order_app.freezed.dart';
 part 'order_app.g.dart';
 
 @freezed
-class OrderApp with _$OrderApp {
+abstract class OrderApp with _$OrderApp {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory OrderApp({

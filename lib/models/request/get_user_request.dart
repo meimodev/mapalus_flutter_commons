@@ -4,7 +4,7 @@ part 'get_user_request.freezed.dart';
 part 'get_user_request.g.dart';
 
 @freezed
-class GetUserRequest with _$GetUserRequest {
+abstract class GetUserRequest with _$GetUserRequest {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory GetUserRequest({

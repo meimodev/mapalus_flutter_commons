@@ -4,7 +4,7 @@ import 'package:mapalus_flutter_commons/models/models.dart';
 part 'update_order_request.freezed.dart';
 
 @freezed
-class UpdateOrderRequest with _$UpdateOrderRequest {
+abstract class UpdateOrderRequest with _$UpdateOrderRequest {
   const factory UpdateOrderRequest({
    required OrderApp orderApp,
   }) = _UpdateOrderRequest;

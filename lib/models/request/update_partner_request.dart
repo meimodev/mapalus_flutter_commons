@@ -4,7 +4,7 @@ import 'package:mapalus_flutter_commons/models/models.dart';
 part 'update_partner_request.freezed.dart';
 
 @freezed
-class UpdatePartnerRequest with _$UpdatePartnerRequest {
+abstract class UpdatePartnerRequest with _$UpdatePartnerRequest {
   const factory UpdatePartnerRequest({
     required Partner partner,
   }) = _UpdatePartnerRequest;

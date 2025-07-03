@@ -35,7 +35,7 @@ class ButtonWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(BaseSize.radiusMd),
       color: enable
           ? backgroundColor ?? BaseColor.primary3
-          : BaseColor.secondaryText.withOpacity(.5),
+          : BaseColor.secondaryText.withValues(alpha: .5),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: onPressed,
@@ -59,7 +59,7 @@ class ButtonWidget extends StatelessWidget {
                             BaseTypography.button.copyWith(
                               color: enable
                                   ? textColor ?? BaseColor.primaryText
-                                  : BaseColor.accent.withOpacity(.5),
+                                  : BaseColor.accent.withValues(alpha: .5),
                             ),
                       ),
                 icon == null || text == null ? const SizedBox() : Gap.w8,

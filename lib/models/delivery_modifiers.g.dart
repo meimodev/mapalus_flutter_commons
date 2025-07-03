@@ -6,17 +6,15 @@ part of 'delivery_modifiers.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$DeliveryModifiersImpl _$$DeliveryModifiersImplFromJson(
-        Map<String, dynamic> json) =>
-    _$DeliveryModifiersImpl(
+_DeliveryModifiers _$DeliveryModifiersFromJson(Map<String, dynamic> json) =>
+    _DeliveryModifiers(
       distancePrice: (json['distance_price'] as num?)?.toDouble() ?? 0,
       distanceUnit: (json['distance_unit'] as num?)?.toDouble() ?? 0,
       weightPrice: (json['weight_price'] as num?)?.toDouble() ?? 0,
       weightUnit: (json['weight_unit'] as num?)?.toDouble() ?? 0,
     );
 
-Map<String, dynamic> _$$DeliveryModifiersImplToJson(
-        _$DeliveryModifiersImpl instance) =>
+Map<String, dynamic> _$DeliveryModifiersToJson(_DeliveryModifiers instance) =>
     <String, dynamic>{
       'distance_price': instance.distancePrice,
       'distance_unit': instance.distanceUnit,

@@ -6,7 +6,7 @@ part 'delivery_time.freezed.dart';
 part 'delivery_time.g.dart';
 
 @freezed
-class DeliveryTime with _$DeliveryTime {
+abstract class DeliveryTime with _$DeliveryTime {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory DeliveryTime({

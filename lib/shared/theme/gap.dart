@@ -49,8 +49,8 @@ class Gap {
 
   /// [INFO]
   /// Gaps for custom width or height outside the 8 pixel rules
-  static customGapWidth(double value) => SizedBox(width: value.w);
+  static Widget customGapWidth(double value) => SizedBox(width: value.w);
 
-  static customGapHeight(double value) => SizedBox(height: value.h);
+  static Widget customGapHeight(double value) => SizedBox(height: value.h);
 
 }

@@ -5,7 +5,7 @@ part 'voucher.freezed.dart';
 part 'voucher.g.dart';
 
 @freezed
-class Voucher with _$Voucher {
+abstract class Voucher with _$Voucher {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Voucher({

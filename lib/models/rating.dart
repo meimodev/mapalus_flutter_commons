@@ -5,7 +5,7 @@ part 'rating.freezed.dart';
 part 'rating.g.dart';
 
 @freezed
-class Rating with _$Rating {
+abstract class Rating with _$Rating {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Rating({

@@ -5,7 +5,7 @@ part 'delivery_modifiers.freezed.dart';
 part 'delivery_modifiers.g.dart';
 
 @freezed
-class DeliveryModifiers with _$DeliveryModifiers {
+abstract class DeliveryModifiers with _$DeliveryModifiers {
   // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory DeliveryModifiers({
