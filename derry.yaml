@@ -5,3 +5,6 @@ build:
 upgrade:
   - dart pub get
   - dart pub upgrade
+gen:
+  - dart pub get
+  - dart run build_runner build

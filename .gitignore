@@ -32,5 +32,9 @@ migrate_working_dir/
 .packages
 build/
 
+# Generated files
+*.g.dart
+*.freezed.dart
+
 # FVM Version Cache
 .fvm/
